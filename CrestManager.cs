@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using HutongGames.PlayMaker;
+using System.Collections.Generic;
 using System.Linq;
+using TeamCherry.Localization;
 using UnityEngine;
 using VMCSE.CrestManagement;
 using static ToolCrest;
@@ -99,7 +101,9 @@ namespace VMCSE
                 slashObject = devilslash,
                 slashUpObject = devilupslash,
                 slashWallObject = devilwallslash,
-                slashAltObject = devilslashalt
+                slashAltObject = devilslashalt,
+                keysheet = "VMCSE",
+                namekey = "TEST"
             };
 
             RegisterCrest(TestCrest);
@@ -124,7 +128,9 @@ namespace VMCSE
                 slashObject = devilslashalt,
                 slashUpObject = devilupslash,
                 slashWallObject = devilwallslash,
-                slashAltObject = devilslash
+                slashAltObject = devilslash,
+                keysheet = "VMCSE",
+                namekey = "DEVILCRESTNAME"
             };
 
             RegisterCrest(devilCrest);
@@ -139,6 +145,13 @@ namespace VMCSE
             Helper.SetPrivateField(crestData, nameof(ToolCrest.crestSilhouette), crest.crestSilhouetteSprite);
             Helper.SetPrivateField(crestData, nameof(ToolCrest.heroConfig), crest.heroControllerConfig);
 
+            LocalisedString namestring = new LocalisedString()
+            {
+                Key = crest.namekey,
+                Sheet = crest.keysheet
+            };
+            Helper.SetPrivateField<LocalisedString>(crestData, nameof(crestData.displayName), namestring);
+
             //For now, i'm ignoring slots.
             Helper.SetPrivateField(crestData, nameof(ToolCrest.slots), new SlotInfo[0]);
 
@@ -148,7 +161,6 @@ namespace VMCSE
                 Slots = new List<ToolCrestsData.SlotData>(),
                 DisplayNewIndicator = true
             };
-
 
             //Add config group to the herocontrollers list
             HeroController.ConfigGroup[] configgroups = Helper.GetPrivateField<HeroController.ConfigGroup[]>(HeroController.instance, nameof(HeroController.instance.configs));

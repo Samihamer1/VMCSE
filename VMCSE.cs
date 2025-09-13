@@ -17,10 +17,8 @@ public class VMCSE : BaseUnityPlugin
 
         // Put your initialization logic here
 
-        HarmonyFileLog.Enabled = true;
-        Harmony.DEBUG = true;
         harmony = new Harmony($"harmony-auto-{(object)Guid.NewGuid()}");
-        harmony.PatchAll();
+        harmony.PatchAll(typeof(Patches));
        
 
         Logger.LogInfo("Vessel May Cry Active");

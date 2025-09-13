@@ -27,6 +27,9 @@ public abstract class CustomCrest
 
     public HeroController.ConfigGroup getConfigGroup() { return configGroup; }
 
+    public string namekey { get; set; }
+    public string keysheet { get; set; }
+
     public void SetupConfigGroup()
     {
         //Not all slashes are accounted for.

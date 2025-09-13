@@ -73,6 +73,7 @@ namespace VMCSE
                 if (Event.Name == eventName) { return Event; }
 
             }
+            
 
             return null;
         }
@@ -89,5 +90,22 @@ namespace VMCSE
             return state.Actions.OfType<T>().First();
         }
 
+        public static void SetPrivateStaticField<T>(Type type, string fieldName, T value)
+        {
+            var field = type.GetField(fieldName, BindingFlags.Static | BindingFlags.NonPublic);
+            if (field == null)
+                throw new MissingFieldException(type.FullName, fieldName);
+
+            field.SetValue(null, value); // null because it's static
+        }
+
+        public static T GetPrivateStaticField<T>(Type type, string fieldName)
+        {
+            var field = type.GetField(fieldName, BindingFlags.Static | BindingFlags.NonPublic);
+            if (field == null)
+                throw new MissingFieldException(type.FullName, fieldName);
+
+            return (T)field.GetValue(null); // null because it's static
+        }
     }
 }
