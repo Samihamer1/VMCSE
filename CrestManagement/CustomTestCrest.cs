@@ -19,8 +19,9 @@ namespace VMCSE.CrestManagement
             startAttackState.AddAction(new CheckIfCrestEquipped { Crest = toolCrest, trueEvent = TESTEVENT });
 
             FsmState testSetState = sprintfsm.AddState("Set Test");
-            sprintfsm.CopyState("Set Attack Single", "Set Test");
-            testSetState.GetAction<SetGameObject>().gameObject = slashDashObject;
+            testSetState = sprintfsm.CopyState("Set Attack Single", "Set Test");
+            SetGameObject action = (SetGameObject)testSetState.Actions[3];
+            action.gameObject = slashDashObject;
 
             sprintfsm.AddTransition("Start Attack", "TEST", "Set Test");
         }

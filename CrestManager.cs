@@ -104,7 +104,30 @@ namespace VMCSE
 
             RegisterCrest(TestCrest);
 
+            //double test
 
+            HeroControllerConfig devilConfig = UnityEngine.GameObject.Instantiate(reaperConfig);
+            devilConfig.name = "Devil";
+            Helper.SetPrivateField(devilConfig, nameof(devilConfig.downSlashType), HeroControllerConfig.DownSlashTypes.Slash);
+
+            DevilCrest devilCrest = new DevilCrest()
+            {
+                name = "Devil",
+                crestGlowSprite = crestGlow,
+                crestSilhouetteSprite = crestSilhouette,
+                crestSprite = crestSprite,
+                heroControllerConfig = devilConfig,
+                isUnlocked = true,
+                activeRootObject = devilroot,
+                slashDashObject = devildashstab,
+                slashDownObject = devildownslash,
+                slashObject = devilslashalt,
+                slashUpObject = devilupslash,
+                slashWallObject = devilwallslash,
+                slashAltObject = devilslash
+            };
+
+            RegisterCrest(devilCrest);
         }
 
         public static void RegisterCrest(CustomCrest crest)
