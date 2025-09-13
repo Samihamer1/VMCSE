@@ -1,6 +1,7 @@
 ﻿using HutongGames.PlayMaker;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TeamCherry.Localization;
 using UnityEngine;
 using VMCSE.CrestManagement;
@@ -130,7 +131,8 @@ namespace VMCSE
                 slashWallObject = devilwallslash,
                 slashAltObject = devilslash,
                 keysheet = "VMCSE",
-                namekey = "DEVILCRESTNAME"
+                namekey = "DEVILCRESTNAME",
+                desckey = "DEVILCRESTDESC"
             };
 
             RegisterCrest(devilCrest);
@@ -150,7 +152,13 @@ namespace VMCSE
                 Key = crest.namekey,
                 Sheet = crest.keysheet
             };
+            LocalisedString descstring = new LocalisedString()
+            {
+                Key = crest.desckey,
+                Sheet = crest.keysheet
+            };
             Helper.SetPrivateField<LocalisedString>(crestData, nameof(crestData.displayName), namestring);
+            Helper.SetPrivateField<LocalisedString>(crestData, nameof(crestData.description), descstring);
 
             //For now, i'm ignoring slots.
             Helper.SetPrivateField(crestData, nameof(ToolCrest.slots), new SlotInfo[0]);

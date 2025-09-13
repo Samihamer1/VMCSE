@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using HarmonyLib.Tools;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace VMCSE;
 
@@ -15,15 +16,22 @@ public class VMCSE : BaseUnityPlugin
     {
         Instance = this;
 
-        // Put your initialization logic here
-
-        harmony = new Harmony($"harmony-auto-{(object)Guid.NewGuid()}");
-        harmony.PatchAll(typeof(Patches));
-       
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChanged;
 
         Logger.LogInfo("Vessel May Cry Active");
     }
 
+    private void OnSceneChanged(Scene prev, Scene next)
+    {
+        if (next.name != "Menu_Title")
+        {
+            if (harmony == null)
+            {
+                harmony = new Harmony($"harmony-auto-{(object)Guid.NewGuid()}");
+                harmony.PatchAll(typeof(Patches));
+            }
+        }
+    }
     public void log(string message)
     {
         Logger.LogInfo(message);

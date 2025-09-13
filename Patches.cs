@@ -25,47 +25,19 @@ public static class Patches
         
     }
 
-    /*[HarmonyPatch(typeof(Language), nameof(Language.Get), new Type[] { typeof(string), typeof(string) })]
+    [HarmonyPatch(typeof(Language), nameof(Language.SwitchLanguage), typeof(LanguageCode))]
     [HarmonyPostfix]
-    private static void ChangeText(string key, string sheetTitle, ref string __result)
+    private static void AddNewSheet()
     {
-        VMCSE.Instance.log("DID");
-        __result = "a";
-       *//* try
-        {
-            __result = "a";
-           *//* __result = key switch
-            {
-                "DEVILCRESTNAME" => "Changed Text",
-                _ => __result,
-            };*//*
-        }
-        catch (Exception ex)
-        {
-            VMCSE.Instance.LogError(ex.Message + "\n" + ex.StackTrace); // goes to BepInEx/LogOutput.log
-        }*//*
-    }*/
+        Dictionary<string, Dictionary<string, string>> fullStore = Helper.GetPrivateStaticField<Dictionary<string, Dictionary<string, string>>>(typeof(Language), "_currentEntrySheets");
 
-
-    //To get around that LocalisedLanguage thing.
-    [HarmonyPatch(typeof(Language), nameof(Language.SwitchLanguage), new Type[] {typeof(LanguageCode)})]
-    [HarmonyPostfix]
-    private static void AddLanguageKey()
-    {
-        try
-        {
-            Dictionary<string, Dictionary<string, string>> dictionary = Helper.GetPrivateStaticField<Dictionary<string, Dictionary<string, string>>>(typeof(Language), "_currentEntrySheets");
-            dictionary.Add("VMCSE", new Dictionary<string, string>()
+        fullStore.Add("VMCSE", new Dictionary<string, string>()
         {
             { "DEVILCRESTNAME", "Devil" },
-            {"TEST", "Test" }
+            { "DEVILCRESTDESC", "A temporary description." }
         });
 
-            Helper.SetPrivateStaticField(typeof(Language), "_currentEntrySheets", dictionary);
-        }
-        catch (Exception ex)
-        {
-            VMCSE.Instance.LogError(ex.Message + "\n" + ex.StackTrace); // goes to BepInEx/LogOutput.log
-        }
+        Helper.SetPrivateStaticField(typeof(Language), "_currentEntrySheets", fullStore);
     }
+
 }

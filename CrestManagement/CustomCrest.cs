@@ -29,6 +29,7 @@ public abstract class CustomCrest
 
     public string namekey { get; set; }
     public string keysheet { get; set; }
+    public string desckey { get; set; }
 
     public void SetupConfigGroup()
     {
