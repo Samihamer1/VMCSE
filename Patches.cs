@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using TeamCherry.Localization;
+using VMCSE.AnimationHandler;
 
 namespace VMCSE;
 
@@ -16,6 +17,7 @@ public static class Patches
     {
         try
         {
+            AnimationManager.InitAnimations();
             CrestManager.AddCrest();
         }
         catch (Exception ex)
@@ -38,6 +40,28 @@ public static class Patches
         });
 
         Helper.SetPrivateStaticField(typeof(Language), "_currentEntrySheets", fullStore);
+    }
+
+    //Nail Art charge time patch
+    [HarmonyPatch(typeof(HeroController), nameof(HeroController.instance.CurrentNailChargeTime), MethodType.Getter)]
+    [HarmonyPostfix]
+    static void ModifyChargeTime(ref float __result)
+    {
+        if (HeroController.instance.playerData.CurrentCrestID == "Devil")
+        {
+            __result = 0.45f;
+        }        
+    }
+
+    //Nail Art charge begin time patch
+    [HarmonyPatch(typeof(HeroController), nameof(HeroController.instance.CurrentNailChargeBeginTime), MethodType.Getter)]
+    [HarmonyPostfix]
+    static void ModifyBeginTime(ref float __result)
+    {
+        if (HeroController.instance.playerData.CurrentCrestID == "Devil")
+        {
+            __result = 0.25f;
+        }
     }
 
 }

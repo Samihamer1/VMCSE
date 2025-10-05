@@ -4,6 +4,7 @@ using HarmonyLib;
 using HarmonyLib.Tools;
 using System;
 using UnityEngine.SceneManagement;
+using VMCSE.AnimationHandler;
 
 namespace VMCSE;
 
@@ -17,6 +18,15 @@ public class VMCSE : BaseUnityPlugin
         Instance = this;
 
         UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChanged;
+
+        try
+        {
+            ResourceLoader.Init();
+        }
+        catch (Exception ex)
+        {
+            VMCSE.Instance.LogError(ex.Message + "\n" + ex.StackTrace); // goes to BepInEx/LogOutput.log
+        }
 
         Logger.LogInfo("Vessel May Cry Active");
     }

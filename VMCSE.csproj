@@ -13,6 +13,7 @@
     <RestoreAdditionalProjectSources>
         https://nuget.bepinex.dev/v3/index.json
     </RestoreAdditionalProjectSources>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -29,6 +30,20 @@
     <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
     <!--If you're unable resolve this dependency, check that you're using the nuget v3 package feed instead of v2.-->
     <PackageReference Include="Silksong.GameLibs" Version="1.0.1-silksong1.0.28324" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<EmbeddedResource Include="Resources/**" />
+	<Compile Remove="Resources\DevilSword\SlashAlt\**" />
+	<Compile Remove="Resources\DevilSword\SlashUp\**" />
+	<Compile Remove="Resources\DevilSword\Slash\**" />
+	<EmbeddedResource Remove="Resources\DevilSword\SlashAlt\**" />
+	<EmbeddedResource Remove="Resources\DevilSword\SlashUp\**" />
+	<EmbeddedResource Remove="Resources\DevilSword\Slash\**" />
+	<None Remove="Resources\DevilSword\SlashAlt\**" />
+	<None Remove="Resources\DevilSword\SlashUp\**" />
+	<None Remove="Resources\DevilSword\Slash\**" />
+	<Folder Include="Components\" />
   </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">

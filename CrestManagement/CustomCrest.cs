@@ -51,5 +51,6 @@ public abstract class CustomCrest
     }
 
     public abstract void SetupDashFSM(); //In which you add the dashstab to the sprint fsm.
-    //public abstract void SetupNailArtFSM(); //Kept commented until I decide to slog through that particular FSM.
+    public abstract void SetupCrestAttackFSM(); 
+    public abstract void SetupNailArtFSM();
 }
