@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -57,11 +58,20 @@ namespace VMCSE.AnimationHandler
             //HighTime Effect
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.HighTimeEffect.spritesheet.png", "HighTimeEffect", 24, tk2dSpriteAnimationClip.WrapMode.Once, 4, 322, 304);
 
+            //Reactor Effect
+            LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.Reactor.spritesheet.png", "ReactorEffect", 36, tk2dSpriteAnimationClip.WrapMode.Once, 6, 158, 38);
+
             #endregion
         }
 
         private static void SetFrameToTrigger(GameObject animatorObject, string animationName, int frame) {
             animatorObject.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName(animationName).frames[frame].triggerEvent = true;
+        }
+
+        public static IEnumerator PlayAnimationThenDestroy(tk2dSpriteAnimator animator, string animationName)
+        {
+            yield return animator.PlayAnimWait(animationName);
+            UnityEngine.Object.Destroy(animator.gameObject);
         }
 
         private static GameObject CreateAnimationObject(string name)

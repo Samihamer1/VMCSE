@@ -62,6 +62,7 @@ namespace VMCSE.Attacks.DevilSword
             FsmState HighTimeBounceState = nailartFSM.AddState("High Time Bounce");
             HighTimeBounceState.AddMethod(() =>
             {
+                HeroController.instance.gameObject.LocateMyFSM("Sprint").SetState("Regain Control Normal");
                 HeroController.instance.SetStartWithHarpoonBounce();
                 HeroController.instance.RegainControl();
                 HeroController.instance.AffectedByGravity(true);

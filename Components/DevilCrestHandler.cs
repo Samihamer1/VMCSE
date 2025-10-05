@@ -83,6 +83,7 @@ namespace VMCSE.Components
                 }
                 if (InputHandler.Instance.inputActions.Left.IsPressed || InputHandler.Instance.inputActions.Right.IsPressed)
                 {
+                   
                     equippedWeapon.HorizontalSpell();
                 }
 

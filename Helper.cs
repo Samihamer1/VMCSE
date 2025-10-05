@@ -34,7 +34,6 @@ namespace VMCSE
             //To account for the increased anim size
             Helper.ScalePolygonCollider(collider, (float)Math.Sqrt(AnimationManager.SPRITESCALE));
         }
-
         public static void SetPrivateField<T>(object instance, string fieldName, T value)
         {
             if (instance == null)
