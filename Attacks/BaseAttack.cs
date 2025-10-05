@@ -10,6 +10,7 @@ namespace VMCSE.Attacks
     public abstract class BaseAttack
     {
         public PlayMakerFSM fsm;
+        public string name;
 
         public abstract void CreateAttack();
         

@@ -49,8 +49,4 @@ public abstract class CustomCrest
         if (configGroup == null) { return; }
         configGroup.Setup();
     }
-
-    public abstract void SetupDashFSM(); //In which you add the dashstab to the sprint fsm.
-    public abstract void SetupCrestAttackFSM(); 
-    public abstract void SetupNailArtFSM();
 }

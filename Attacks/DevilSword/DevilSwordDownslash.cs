@@ -12,14 +12,16 @@ namespace VMCSE.Attacks.DevilSword
     {
         private GameObject downslashObject;
 
-        public DevilSwordDownslash(GameObject downslashObject, PlayMakerFSM crestAttackFSM)
+        public DevilSwordDownslash(GameObject downslashObject)
         {
             this.downslashObject = downslashObject;
-            fsm = crestAttackFSM;
         }
 
         public override void CreateAttack()
         {
+            fsm = HeroController.instance.gameObject.LocateMyFSM("Crest Attacks");
+            if (fsm == null) { VMCSE.Instance.LogError("VMCSE - Sprint not found."); return; }
+
             FsmOwnerDefault hornetOwnerDefault = Helper.GetHornetOwnerDefault();
 
             FsmEvent DEVILDOWNSLASH = fsm.CreateFsmEvent("DEVILSWORD DOWNSLASH");

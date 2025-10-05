@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using TeamCherry.Localization;
+using UnityEngine;
 using VMCSE.AnimationHandler;
+using VMCSE.Components;
 
 namespace VMCSE;
 
@@ -45,7 +47,7 @@ public static class Patches
     //Nail Art charge time patch
     [HarmonyPatch(typeof(HeroController), nameof(HeroController.instance.CurrentNailChargeTime), MethodType.Getter)]
     [HarmonyPostfix]
-    static void ModifyChargeTime(ref float __result)
+    private static void ModifyChargeTime(ref float __result)
     {
         if (HeroController.instance.playerData.CurrentCrestID == "Devil")
         {
@@ -56,12 +58,38 @@ public static class Patches
     //Nail Art charge begin time patch
     [HarmonyPatch(typeof(HeroController), nameof(HeroController.instance.CurrentNailChargeBeginTime), MethodType.Getter)]
     [HarmonyPostfix]
-    static void ModifyBeginTime(ref float __result)
+    private static void ModifyBeginTime(ref float __result)
     {
         if (HeroController.instance.playerData.CurrentCrestID == "Devil")
         {
             __result = 0.25f;
         }
+    }
+
+    //Hit instance for style meter
+    [HarmonyPatch(typeof(HealthManager), nameof(HealthManager.TakeDamage))]
+    [HarmonyPostfix]
+    private static void SendHitToManager(HitInstance hitInstance)
+    {
+        if (HeroController.instance == null) { return; }
+
+        DevilCrestHandler handler = HeroController.instance.GetComponent<DevilCrestHandler>();
+        if (handler == null) { return; }
+
+        handler.HitLanded(hitInstance);
+    }
+
+    //got hit for style meter
+    [HarmonyPatch(typeof(HeroController), nameof(HeroController.instance.TakeDamage), typeof(GameObject), typeof(GlobalEnums.CollisionSide), typeof(int), typeof(GlobalEnums.HazardType), typeof(GlobalEnums.DamagePropertyFlags))]
+    [HarmonyPostfix]
+    private static void SendGotHitToManager()
+    {
+        if (HeroController.instance == null) { return; }
+
+        DevilCrestHandler handler = HeroController.instance.GetComponent<DevilCrestHandler>();
+        if (handler == null) { return; }
+
+        handler.GotHit();
     }
 
 }

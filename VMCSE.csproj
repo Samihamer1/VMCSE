@@ -43,7 +43,29 @@
 	<None Remove="Resources\DevilSword\SlashAlt\**" />
 	<None Remove="Resources\DevilSword\SlashUp\**" />
 	<None Remove="Resources\DevilSword\Slash\**" />
-	<Folder Include="Components\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\UI\Style\Style1BG.png" />
+    <None Remove="Resources\UI\Style\Style1FG.png" />
+    <None Remove="Resources\UI\Style\Style2BG.png" />
+    <None Remove="Resources\UI\Style\Style2FG.png" />
+    <None Remove="Resources\UI\Style\Style3BG.png" />
+    <None Remove="Resources\UI\Style\Style3FG.png" />
+    <None Remove="Resources\UI\Style\Style4BG.png" />
+    <None Remove="Resources\UI\Style\Style4FG.png" />
+    <None Remove="Resources\UI\Style\Style5BG.png" />
+    <None Remove="Resources\UI\Style\Style5FG.png" />
+    <None Remove="Resources\UI\Style\Style6BG.png" />
+    <None Remove="Resources\UI\Style\Style6FG.png" />
+    <None Remove="Resources\UI\Style\Style7BG.png" />
+    <None Remove="Resources\UI\Style\Style7FG.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight Silksong\Hollow Knight Silksong_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">
