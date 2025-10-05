@@ -71,17 +71,17 @@ namespace VMCSE.CrestManagement
             FsmState GreatSlashChoiceState = nailartFSM.AddState("Great Slash Choice");
             GreatSlashChoiceState.AddMethod(() =>
             {
-                nailartFSM.SendEvent("DEVILSWORD"); //for now, after we make it based on equipped weapon
+                SendWeaponEvent(nailartFSM);
             });
             FsmState CycloneSlashChoiceState = nailartFSM.AddState("Cyclone Slash Choice");
             CycloneSlashChoiceState.AddMethod(() =>
             {
-                nailartFSM.SendEvent("DEVILSWORD"); //for now, after we make it based on equipped weapon
+                SendWeaponEvent(nailartFSM);
             });
             FsmState DashSlashChoiceState = nailartFSM.AddState("Dash Slash Choice");
             DashSlashChoiceState.AddMethod(() =>
             {
-                nailartFSM.SendEvent("DEVILSWORD"); //for now, after we make it based on equipped weapon
+                SendWeaponEvent(nailartFSM);
             });
 
             //transitions
@@ -93,6 +93,14 @@ namespace VMCSE.CrestManagement
             GreatSlashChoiceState.AddTransition("FINISHED", "Antic");
             CycloneSlashChoiceState.AddTransition("FINISHED", "Antic");
             DashSlashChoiceState.AddTransition("FINISHED", "Antic");
+        }
+
+        private void SendWeaponEvent(PlayMakerFSM playmakerFSM)
+        {
+            if (HeroController.instance == null) { return; }
+            DevilCrestHandler handler = HeroController.instance.GetComponent<DevilCrestHandler>();
+            if (handler == null) { return; }
+            playmakerFSM.SendEvent(handler.getEquippedWeapon().weaponEvent);
         }
     }
 }

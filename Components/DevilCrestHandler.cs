@@ -59,6 +59,11 @@ namespace VMCSE.Components
             equippedWeapon = weapon;
         }
 
+        public WeaponBase getEquippedWeapon()
+        {
+            return equippedWeapon;
+        }
+
         public bool isWeaponEquipped(WeaponBase weapon)
         {
             return equippedWeapon == weapon;
