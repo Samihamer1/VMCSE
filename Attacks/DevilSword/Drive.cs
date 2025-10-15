@@ -20,6 +20,8 @@ namespace VMCSE.Attacks.DevilSword
         private GameObject driveAltObject;
         private tk2dSpriteAnimation shamanLibrary;
         private float chargeTimer = 0f;
+
+        private const float COOLDOWNTIME = 1f;
         public Drive(DevilCrestHandler handler) : base(handler)
         {
             EVENTNAME = "DRIVE";
@@ -110,6 +112,7 @@ namespace VMCSE.Attacks.DevilSword
             DriveReleaseState.AddMethod(_ =>
             {
                 driveObject.GetComponent<NailSlash>().StartSlash();
+                StartCooldownTimer(COOLDOWNTIME);
             });
             DriveReleaseState.AddAnimationAction("DevilSword", "DriveSlashFast");
 
@@ -124,6 +127,7 @@ namespace VMCSE.Attacks.DevilSword
             DriveReleaseLargeState.AddMethod(_ =>
             {
                 GameManager.instance.StartCoroutine(DoubleDrive());
+                StartCooldownTimer(COOLDOWNTIME);
             });
             DriveReleaseLargeState.AddAnimationAction("DevilSword", "DriveSlashFast");
 

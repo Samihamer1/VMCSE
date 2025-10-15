@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 using VMCSE.Components;
 
 namespace VMCSE.Attacks
@@ -10,6 +11,9 @@ namespace VMCSE.Attacks
     {
         public DevilCrestHandler handler;
         public string EVENTNAME;
+        private float cooldown = 0;
+        private float lastUsedTime = 0;
+
         public BaseSpell(DevilCrestHandler handler) {
             if (HeroController.instance == null) { return; }
             PlayMakerFSM spellfsm = HeroController.instance.gameObject.LocateMyFSM("Silk Specials");
@@ -19,9 +23,26 @@ namespace VMCSE.Attacks
             this.handler = handler;
         }
 
+        public void StartCooldownTimer(float cooldown)
+        {
+            lastUsedTime = Time.time;
+            this.cooldown = cooldown;
+        }
+
+        public bool OnCooldown()
+        {
+            float currentTime = Time.time;
+
+            if (currentTime-lastUsedTime >= cooldown)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public void SetStateAsInit(string statename)
         {
-            fsm.AddGlobalTransition(EVENTNAME, statename);
+            fsm.AddGlobalTransition(EVENTNAME, statename);            
         }
     }
 }

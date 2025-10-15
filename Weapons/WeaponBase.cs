@@ -57,29 +57,31 @@ namespace VMCSE.Weapons
             spell.CreateAttack();
         }
 
-        private void Spell(string EVENT)
+        private void Spell(BaseSpell? spell)
         {
             if (HeroController.instance == null) { return; }
+            if (spell == null) { return; }
             PlayMakerFSM spellfsm = HeroController.instance.gameObject.LocateMyFSM("Silk Specials");
-            spellfsm.SendEvent(EVENT);
+
+            if (!spell.OnCooldown())
+            {
+                spellfsm.SendEvent(spell.EVENTNAME);
+            }
         }
 
         public void UpSpell()
         {
-            if (upSpell == null) { return; }
-            Spell(upSpell.EVENTNAME);
+            Spell(upSpell);
         }
 
         public void HorizontalSpell()
         {
-            if (horizontalSpell == null) { return; };
-            Spell(horizontalSpell.EVENTNAME);
+            Spell(horizontalSpell);
         }
 
         public void DownSpell()
         {
-            if (downSpell == null) {  return; }
-            Spell(downSpell.EVENTNAME);
+            Spell(downSpell);
         }
 
         public HeroController.ConfigGroup GetConfigGroup()
