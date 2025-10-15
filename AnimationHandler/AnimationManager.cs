@@ -10,7 +10,7 @@ namespace VMCSE.AnimationHandler
     public static class AnimationManager
     {
         private static bool init = false;
-        public const float SPRITESCALE = 3.5f;
+        public const float SPRITESCALE = 3.25f;
         public static GameObject DevilSwordAnimator;
         public static void InitAnimations()
         {
@@ -24,19 +24,19 @@ namespace VMCSE.AnimationHandler
             //DevilSword animations (for DevilSwordDante)
 
             //SlashEffect
-            LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.SlashEffect.spritesheet.png", "SlashEffect", 30, tk2dSpriteAnimationClip.WrapMode.Once, 4, 217, 190);
+            LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.SlashEffect.spritesheet.png", "SlashEffect", 30, tk2dSpriteAnimationClip.WrapMode.Once, 4, 217, 192);
             SetFrameToTrigger(DevilSwordAnimator, "SlashEffect", 1); // To activate the damage frames within NailSlash
-            SetFrameToTrigger(DevilSwordAnimator, "SlashEffect", 3);
+            SetFrameToTriggerRedSlash(DevilSwordAnimator, "SlashEffect", 3);
 
             //SlashAltEffect
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.SlashAltEffect.spritesheet.png", "SlashAltEffect", 30, tk2dSpriteAnimationClip.WrapMode.Once, 4, 266, 237);
             SetFrameToTrigger(DevilSwordAnimator, "SlashAltEffect", 1); // To activate the damage frames within NailSlash
-            SetFrameToTrigger(DevilSwordAnimator, "SlashAltEffect", 3);
+            SetFrameToTriggerRedSlash(DevilSwordAnimator, "SlashAltEffect", 3);
 
             //SlashUpEffect
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.SlashUpEffect.spritesheet.png", "SlashUpEffect", 30, tk2dSpriteAnimationClip.WrapMode.Once, 4, 215, 241);
             SetFrameToTrigger(DevilSwordAnimator, "SlashUpEffect", 1); // To activate the damage frames within NailSlash
-            SetFrameToTrigger(DevilSwordAnimator, "SlashUpEffect", 3);
+            SetFrameToTriggerRedSlash(DevilSwordAnimator, "SlashUpEffect", 3);
 
             //DownspikeEffect
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.DownspikeEffect.spritesheet.png", "DownSpikeEffect", 20, tk2dSpriteAnimationClip.WrapMode.Once, 4, 1, 1);
@@ -48,6 +48,9 @@ namespace VMCSE.AnimationHandler
 
             //Downspike Antic
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.DownspikeAntic.spritesheet.png", "DownSpike Antic", 18, tk2dSpriteAnimationClip.WrapMode.Once, 3, 270, 250);
+
+            //Drive Antic
+            LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.DownspikeAntic.spritesheet.png", "Drive Antic", 12, tk2dSpriteAnimationClip.WrapMode.Once, 3, 270, 250);
 
             //Dashstab Antic
             //LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.Downspike.spritesheet.png", "DownSpike", 16, tk2dSpriteAnimationClip.WrapMode.Once, 2, 270, 250);
@@ -61,11 +64,23 @@ namespace VMCSE.AnimationHandler
             //Reactor Effect
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.Reactor.spritesheet.png", "ReactorEffect", 36, tk2dSpriteAnimationClip.WrapMode.Once, 6, 158, 38);
 
+            //Drive Slash
+            CloneAnimationTo(DevilSwordAnimator, "Hornet CrestWeapon Shaman Anim", "Slash_Charged", "DriveSlash", 40);
+
+            //Drive Slash Fast
+            CloneAnimationTo(DevilSwordAnimator, "Hornet CrestWeapon Shaman Anim", "Slash_Charged", "DriveSlashFast", 80);
+
             #endregion
         }
 
         private static void SetFrameToTrigger(GameObject animatorObject, string animationName, int frame) {
             animatorObject.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName(animationName).frames[frame].triggerEvent = true;
+        }
+
+        private static void SetFrameToTriggerRedSlash(GameObject animatorObject, string animationName, int frame)
+        {
+            SetFrameToTrigger(animatorObject, animationName, frame);
+            animatorObject.GetComponent<tk2dSpriteAnimator>().Library.GetClipByName(animationName).frames[frame].eventInfo = "RedSlash";
         }
 
         public static IEnumerator PlayAnimationThenDestroy(tk2dSpriteAnimator animator, string animationName)
@@ -74,9 +89,41 @@ namespace VMCSE.AnimationHandler
             UnityEngine.Object.Destroy(animator.gameObject);
         }
 
+        public static void CloneAnimationTo(GameObject animator, string libraryName, string animationName, string newAnimationName, float newFPS)
+        {
+            foreach (HeroController.ConfigGroup configGroup in HeroController.instance.configs)
+            {
+                HeroControllerConfig config = configGroup.Config;
+                if (config == null) { continue; }
+
+                tk2dSpriteAnimation library = config.heroAnimOverrideLib;
+                if (library == null) { continue; }
+
+                if (library.name == libraryName)
+                {
+                    tk2dSpriteAnimationClip clip = library.GetClipByName(animationName);
+                    if (clip == null) { continue; }
+
+                    tk2dSpriteAnimationClip clone = new tk2dSpriteAnimationClip();
+                    clone.CopyFrom(clip);
+                    clone.name = newAnimationName;
+                    clone.fps = newFPS;
+
+                    List<tk2dSpriteAnimationClip> list = animator.GetComponent<tk2dSpriteAnimator>().Library.clips.ToList<tk2dSpriteAnimationClip>();
+                    list.Add(clone);
+
+                    tk2dSpriteAnimation animation = animator.GetComponent<tk2dSpriteAnimator>().Library;
+                    animation.clips = list.ToArray();
+                    Helper.SetPrivateField<bool>(animation, "isValid", false); //to refresh the animation lookup
+                    animation.ValidateLookup();
+                }
+            }
+        }
+
         private static GameObject CreateAnimationObject(string name)
         {
             GameObject obj = new GameObject();
+            obj.transform.parent = HeroController.instance.transform;
             obj.name = name;
             obj.AddComponent<tk2dSprite>();
             tk2dSpriteAnimation animation = obj.AddComponent<tk2dSpriteAnimation>();

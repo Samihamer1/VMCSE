@@ -1,6 +1,7 @@
 ﻿using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using SFCore.Utils;
+using Silksong.FsmUtil;
+using System;
 using UnityEngine;
 using VMCSE.Weapons;
 
@@ -32,7 +33,7 @@ namespace VMCSE.Attacks.DevilSword
             FsmOwnerDefault lungeStopperOwnerDefault = new FsmOwnerDefault() { gameObject = lungeStopper, ownerOption = OwnerDefaultOption.SpecifyGameObject };
 
             FsmState AnticTypeState = nailartFSM.GetState("Antic Type");
-            AnticTypeState.AddMethod(() =>
+            AnticTypeState.AddMethod(_ =>
             {
                 if (HeroController.instance.playerData.CurrentCrestID == "Devil")
                 {
@@ -48,7 +49,7 @@ namespace VMCSE.Attacks.DevilSword
             MillionStabState.GetAction<Trigger2dEvent>(9).gameObject = lungeStopperOwnerDefault;
             MillionStabState.GetAction<Trigger2dEvent>(10).gameObject = lungeStopperOwnerDefault;
             MillionStabState.RemoveAction(7); //activate gameobject
-            MillionStabState.AddMethod(() => { millionStinger.SetActive(true); });
+            MillionStabState.AddMethod(_ => { millionStinger.SetActive(true); });
 
             FsmState MillionStabDmgBrake = nailartFSM.AddState("Millionstab Dmg Brake");
             MillionStabDmgBrake.CopyActionData(nailartFSM.GetState("Wanderer DmgBrake"));

@@ -14,6 +14,8 @@ namespace VMCSE.Attacks.Slashes
         public  GameObject SlashAnimatorObject { get; set; }
         public Vector3 LocalPosition { get; set; }
         public Vector3 LocalScale { get; set; }
+        public bool CreateRedSlash { get; set; }
+        public Vector3 RedSlashOffset { get; set; }
 
         public void SetupSlash()
         {
@@ -36,6 +38,17 @@ namespace VMCSE.Attacks.Slashes
 
             //To account for the increased anim size
             Helper.ScalePolygonCollider(collider, (float)Math.Sqrt(AnimationManager.SPRITESCALE));
+
+            if (!CreateRedSlash) { return; }
+
+            GameObject redCopy = GameObject.Instantiate(SlashObject);
+            redCopy.transform.parent = SlashObject.transform;
+            redCopy.transform.localPosition = RedSlashOffset;
+            redCopy.name = "RedSlash";
+            redCopy.GetComponent<DamageEnemies>().silkGeneration = HitSilkGeneration.None;
+            redCopy.GetComponent<DamageEnemies>().nailDamageMultiplier = 0.33f;
+            redCopy.GetComponent<NailSlash>().hc = HeroController.instance;
+            GameObject.Destroy(redCopy.GetComponent<NailSlashRecoil>());
         }
     }
 }

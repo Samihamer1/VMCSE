@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using SFCore.Utils;
+using Silksong.FsmUtil;
 using VMCSE.AnimationHandler;
 
 namespace VMCSE.Attacks.DevilSword
@@ -52,7 +52,7 @@ namespace VMCSE.Attacks.DevilSword
             HighTimeState.GetAction<Trigger2dEvent>(10).gameObject = lungeStopperOwnerDefault;
             HighTimeState.RemoveAction(7); //activate gameobject
             HighTimeState.RemoveAction(5); //accelerate to y
-            HighTimeState.AddMethod(() => { highTime.SetActive(true); });
+            HighTimeState.AddMethod(_ => { highTime.SetActive(true); });
             HighTimeState.RemoveAction(2); //set velocity to -45f x
             HighTimeState.GetAction<SetVelocity2d>().y = 30f;
             HighTimeState.GetAction<DecelerateXY>().decelerationX = 0f;
@@ -60,7 +60,7 @@ namespace VMCSE.Attacks.DevilSword
             HighTimeState.GetAction<PlayAudioEvent>().audioClip = nailartFSM.GetState("Warrior2 Leap").GetAction<PlayAudioEvent>().audioClip;
 
             FsmState HighTimeBounceState = nailartFSM.AddState("High Time Bounce");
-            HighTimeBounceState.AddMethod(() =>
+            HighTimeBounceState.AddMethod(_ =>
             {
                 HeroController.instance.gameObject.LocateMyFSM("Sprint").SetState("Regain Control Normal");
                 HeroController.instance.SetStartWithHarpoonBounce();

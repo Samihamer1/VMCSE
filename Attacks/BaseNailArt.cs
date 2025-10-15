@@ -1,5 +1,5 @@
 ﻿using HutongGames.PlayMaker;
-using SFCore.Utils;
+using Silksong.FsmUtil;
 using VMCSE.Weapons;
 
 namespace VMCSE.Attacks

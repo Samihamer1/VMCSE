@@ -1,6 +1,6 @@
 ﻿using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using SFCore.Utils;
+using Silksong.FsmUtil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -168,6 +168,23 @@ namespace VMCSE
             {
                 gameObject = hornetOwnerDefault,
                 animationCompleteEvent = FsmEvent.GetFsmEvent(eventName),
+                fsmComponent = state.fsm.FsmComponent
+            });
+        }
+
+        /// <summary>
+        /// Adds a Tk2dWatchAnimationEventsV3 action to a state. Only use when hornet is created already.
+        /// </summary>
+        /// <param name="state">The state</param>
+        /// <param name="eventName">The name of the event to be played upon animation trigger event</param>
+        public static void AddWatchAnimationActionTrigger(this FsmState state, string eventName)
+        {
+            FsmOwnerDefault hornetOwnerDefault = GetHornetOwnerDefault();
+
+            state.AddAction(new Tk2dWatchAnimationEventsV3
+            {
+                gameObject = hornetOwnerDefault,
+                animationTriggerEvent = FsmEvent.GetFsmEvent(eventName),
                 fsmComponent = state.fsm.FsmComponent
             });
         }

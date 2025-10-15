@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SFCore.Utils;
+using Silksong.FsmUtil;
 using UnityEngine;
 
 namespace VMCSE.Attacks.DevilSword
@@ -30,14 +30,13 @@ namespace VMCSE.Attacks.DevilSword
             //Setup state
 
             FsmState DevilDownslashSetupState = fsm.AddState("Devilsword Downslash Setup");
-            DevilDownslashSetupState.AddMethod(() =>
+            DevilDownslashSetupState.AddMethod(_ =>
             {
-
                 HeroController.instance.RelinquishControlNotVelocity();
                 HeroController.instance.StopAnimationControl();
                 HeroController.instance.AffectedByGravity(false);
                 HeroController.instance.gameObject.GetComponent<Rigidbody2D>().SetVelocity(0, 0);
-                fsm.GetFsmBoolVariable("Disabled Animation").Value = true;
+                fsm.GetBoolVariable("Disabled Animation").Value = true;
             });
 
             //Antic State
@@ -49,7 +48,7 @@ namespace VMCSE.Attacks.DevilSword
             //Slash state
 
             FsmState DevilDownslashState = fsm.AddState("Devilsword Downslash");
-            DevilDownslashState.AddMethod(() =>
+            DevilDownslashState.AddMethod(_ =>
             {
                 HeroController.instance.gameObject.GetComponent<Rigidbody2D>().SetVelocity(0, -35);
                 HeroController.instance.AffectedByGravity(true);
@@ -62,7 +61,7 @@ namespace VMCSE.Attacks.DevilSword
             //Slash end state
 
             FsmState DevilDownslashEndState = fsm.AddState("Devilsword Downslash End");
-            DevilDownslashEndState.AddMethod(() =>
+            DevilDownslashEndState.AddMethod(_ =>
             {
                 HeroController.instance.gameObject.GetComponent<Rigidbody2D>().SetVelocity(0, 0);
                 HeroController.instance.SetCState("downAttacking", false);
@@ -72,7 +71,7 @@ namespace VMCSE.Attacks.DevilSword
             //Slash bounce state
 
             FsmState DevilDownslashBounceState = fsm.AddState("Devilsword Downslash Bounce");
-            DevilDownslashBounceState.AddMethod(() =>
+            DevilDownslashBounceState.AddMethod(_ =>
             {
                 HeroController.instance.gameObject.GetComponent<Rigidbody2D>().SetVelocity(0, 0);
                 HeroController.instance.SetCState("downAttacking", false);

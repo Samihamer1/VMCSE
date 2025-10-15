@@ -1,11 +1,12 @@
 ﻿using HutongGames.PlayMaker.Actions;
 using HutongGames.PlayMaker;
-using SFCore.Utils;
+using Silksong.FsmUtil;
 using UnityEngine;
 using VMCSE.Attacks.DevilSword;
 using GlobalEnums;
 using VMCSE.Weapons;
 using VMCSE.Components;
+using System;
 
 namespace VMCSE.CrestManagement
 {
@@ -32,7 +33,7 @@ namespace VMCSE.CrestManagement
         private void ReviveNailArts(PlayMakerFSM nailartFSM)
         {
             FsmState TakeControlState = nailartFSM.GetState("Can Nail Art?");
-            TakeControlState.AddMethod(() =>
+            TakeControlState.AddMethod(_ =>
             {
                 wasSprinting = HeroController.instance.cState.isSprinting;
             });
@@ -40,7 +41,7 @@ namespace VMCSE.CrestManagement
             FsmEventTarget nailartTarget = new FsmEventTarget() { target = FsmEventTarget.EventTarget.FSMComponent, fsmComponent = nailartFSM };
 
             FsmState AnticTypeState = nailartFSM.GetState("Antic Type");
-            AnticTypeState.AddMethod(() =>
+            AnticTypeState.AddMethod(_ =>
             {
                 if (HeroController.instance.playerData.CurrentCrestID == "Devil")
                 {
@@ -49,7 +50,7 @@ namespace VMCSE.CrestManagement
             });
 
             FsmState SprintCheckState = nailartFSM.AddState("Sprinting?");
-            SprintCheckState.AddMethod(() =>
+            SprintCheckState.AddMethod(_ =>
             {
                 if (wasSprinting || nailartFSM.GetFsmBoolIfExists("dashing") || GameManager.instance.inputHandler.inputActions.Dash.IsPressed)
                 {
@@ -59,7 +60,7 @@ namespace VMCSE.CrestManagement
 
 
             FsmState CycloneCheckState = nailartFSM.AddState("Holding Up?");
-            CycloneCheckState.AddMethod(() =>
+            CycloneCheckState.AddMethod(_ =>
             {
                 if (GameManager.instance.inputHandler.inputActions.Up.IsPressed || GameManager.instance.inputHandler.inputActions.Down.IsPressed)
                 {
@@ -69,17 +70,17 @@ namespace VMCSE.CrestManagement
             
 
             FsmState GreatSlashChoiceState = nailartFSM.AddState("Great Slash Choice");
-            GreatSlashChoiceState.AddMethod(() =>
+            GreatSlashChoiceState.AddMethod(_ =>
             {
                 SendWeaponEvent(nailartFSM);
             });
             FsmState CycloneSlashChoiceState = nailartFSM.AddState("Cyclone Slash Choice");
-            CycloneSlashChoiceState.AddMethod(() =>
+            CycloneSlashChoiceState.AddMethod(_ =>
             {
                 SendWeaponEvent(nailartFSM);
             });
             FsmState DashSlashChoiceState = nailartFSM.AddState("Dash Slash Choice");
-            DashSlashChoiceState.AddMethod(() =>
+            DashSlashChoiceState.AddMethod(_ =>
             {
                 SendWeaponEvent(nailartFSM);
             });

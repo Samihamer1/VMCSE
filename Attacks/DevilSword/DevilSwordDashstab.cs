@@ -1,6 +1,6 @@
 ﻿using HutongGames.PlayMaker.Actions;
 using HutongGames.PlayMaker;
-using SFCore.Utils;
+using Silksong.FsmUtil;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,7 +25,7 @@ namespace VMCSE.Attacks.DevilSword
             FsmEvent DEVILEVENT = sprintfsm.CreateFsmEvent("DEVIL");
 
             FsmState startAttackState = sprintfsm.GetState("Start Attack");
-            startAttackState.AddMethod(() =>
+            startAttackState.AddMethod(_ =>
             {
                 if (HeroController.instance.playerData.CurrentCrestID == "Devil")
                 {

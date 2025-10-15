@@ -1,16 +1,22 @@
 ﻿using HutongGames.PlayMaker;
-using SFCore.Utils;
+using HutongGames.PlayMaker.Actions;
+using Silksong.FsmUtil;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using VMCSE.AnimationHandler;
 using VMCSE.Components;
+using VMCSE.Components.ObjectComponents;
 
 namespace VMCSE.Attacks.DevilSword
 {
     public class Reactor : BaseSpell
     {
+        private GameObject swordRoot;
+        private GameObject[] swords;
+
         public Reactor(DevilCrestHandler handler) : base(handler)
         {
             this.EVENTNAME = "REACTOR";
@@ -21,8 +27,13 @@ namespace VMCSE.Attacks.DevilSword
             if (fsm == null) { return; }
 
             FsmState ReactorCheckState = fsm.AddState("Reactor Check");
-            ReactorCheckState.AddMethod(() =>
+            ReactorCheckState.AddMethod(_ =>
             {
+                if (HeroController.instance.cState.wallClinging)
+                {
+                    fsm.SendEvent("FINISHED");
+                }
+
                 bool charge = handler.UseAirCharge();
                 if (charge)
                 {
@@ -30,30 +41,40 @@ namespace VMCSE.Attacks.DevilSword
                 }
             });
 
-            FsmState ReactorBounceState = fsm.AddState("Reactor Bounce");
-            ReactorBounceState.AddMethod(() =>
+            FsmState ReactorSummonState = fsm.AddState("Reactor Summon");
+            ReactorSummonState.AddMethod(_ =>
             {
-                GameObject effect = CreateEffect();
-                GameManager.instance.StartCoroutine(AnimationManager.PlayAnimationThenDestroy(effect.GetComponent<tk2dSpriteAnimator>(), "ReactorEffect"));
-                effect.transform.position = HeroController.instance.transform.position - new Vector3(0, 0.75f);
-                effect.SetActive(true);
+                DevilCrestHandler handler = HeroController.instance.GetComponent<DevilCrestHandler>();
+                if (handler == null) { VMCSE.Instance.LogError("DevilCrestHandler not found!"); return; }
+                handler.RefreshChaserBlades();
+            });
 
-                //HeroController.instance.CancelDash();
-                //HeroController.instance.RelinquishControl();
-                //HeroController.instance.AffectedByGravity(false);
-                //HeroController.instance.SetDoFullJump();
-                //HeroController.instance.Jump();
-                HeroController.instance.gameObject.LocateMyFSM("Sprint").SetState("Regain Control Normal");
-                HeroController.instance.DownspikeBounce(false);
-                //HeroController.instance.cState.onGround = false;
-                //HeroController.instance.ShroomBounce();
-                //HeroController.instance.ResetAnimationDownspikeBounce();
+            FsmState ReactorBounceState = fsm.AddState("Reactor Bounce");
+            ReactorBounceState.AddMethod(_ =>
+            {
+                try
+                {
+                    GameObject effect = CreateEffect();
+                    GameManager.instance.StartCoroutine(AnimationManager.PlayAnimationThenDestroy(effect.GetComponent<tk2dSpriteAnimator>(), "ReactorEffect"));
+                    effect.transform.position = HeroController.instance.transform.position - new Vector3(0, 0.75f);
+                    effect.SetActive(true);
+
+
+                    HeroController.instance.gameObject.LocateMyFSM("Sprint").SetState("Regain Control Normal");
+                    HeroController.instance.DownspikeBounce(false);
+                }
+                catch (Exception ex)
+                {
+                    VMCSE.Instance.LogError(ex.Message + "\n" + ex.StackTrace); // goes to BepInEx/LogOutput.log
+                }
+
 
             });
 
             //Transition
             ReactorCheckState.AddTransition("FINISHED", "Special End");
-            ReactorCheckState.AddTransition("USE", ReactorBounceState.name);
+            ReactorCheckState.AddTransition("USE", ReactorSummonState.name);
+            ReactorSummonState.AddTransition("FINISHED", ReactorBounceState.name);
             ReactorBounceState.AddTransition("FINISHED", "Special End");
 
             SetStateAsInit(ReactorCheckState.name);
@@ -68,5 +89,7 @@ namespace VMCSE.Attacks.DevilSword
 
             return effect;
         }
+
+        
     }
 }
