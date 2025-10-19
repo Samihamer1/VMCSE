@@ -9,14 +9,10 @@ namespace VMCSE.AnimationHandler
 {
     public static class AnimationManager
     {
-        private static bool init = false;
         public const float SPRITESCALE = 3.25f;
         public static GameObject DevilSwordAnimator;
         public static void InitAnimations()
         {
-            if (init) return;
-            init = true;
-
             #region DevilSword animations
 
             DevilSwordAnimator = CreateAnimationObject("DevilSword");
@@ -67,8 +63,17 @@ namespace VMCSE.AnimationHandler
             //Drive Slash
             CloneAnimationTo(DevilSwordAnimator, "Hornet CrestWeapon Shaman Anim", "Slash_Charged", "DriveSlash", 40);
 
+            //RoundTrip Antic
+            CloneAnimationTo(DevilSwordAnimator, "Hornet CrestWeapon Shaman Anim", "Slash_Charged", "RoundTrip Antic", 35);
+
             //Drive Slash Fast
             CloneAnimationTo(DevilSwordAnimator, "Hornet CrestWeapon Shaman Anim", "Slash_Charged", "DriveSlashFast", 80);
+
+            //RoundTripEffect
+            LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.RoundTripEffect.spritesheet.png", "RoundTripEffect", 24, tk2dSpriteAnimationClip.WrapMode.Loop, 4, 251, 86);
+
+            //ChaserBladeIdle
+            LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.ChaserBladeIdle.1.png", "ChaserBlade Idle", 24, tk2dSpriteAnimationClip.WrapMode.Loop, 1, 29, 236);
 
             #endregion
         }

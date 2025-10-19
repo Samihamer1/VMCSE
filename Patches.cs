@@ -92,4 +92,12 @@ public static class Patches
         handler.GotHit();
     }
 
+    //for the skill icons
+    [HarmonyPatch(typeof(HudCanvas), nameof(HudCanvas.Awake))]
+    [HarmonyPostfix]
+    private static void HudTest()
+    {
+        HudCanvas.instance.gameObject.AddComponent<CanvasUI>();        
+    }
+
 }

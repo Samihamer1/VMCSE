@@ -18,11 +18,13 @@ namespace VMCSE.Weapons
             weaponEvent = "DEVILSWORD";
             dashSlash = new MillionStab();
             cycloneSlash = new HighTime();
+            greatSlash = new SwordFormation();
             specialDownSlash = new DevilSwordDownslash(objectInfo.slashDownObject);
             specialDashStab = new DevilSwordDashstab(objectInfo.slashdashstabObject);
 
             downSpell = new Reactor(handler);
             horizontalSpell = new Drive(handler);
+            upSpell = new RoundTrip(handler);
 
             Initialise();
 

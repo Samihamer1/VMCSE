@@ -63,7 +63,7 @@ namespace VMCSE.Weapons
             if (spell == null) { return; }
             PlayMakerFSM spellfsm = HeroController.instance.gameObject.LocateMyFSM("Silk Specials");
 
-            if (!spell.OnCooldown())
+            if (!spell.OnCooldown() && !spell.OnManualCooldown())
             {
                 spellfsm.SendEvent(spell.EVENTNAME);
             }

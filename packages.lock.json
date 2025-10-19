@@ -24,6 +24,12 @@
         "resolved": "1.1.0",
         "contentHash": "RqM3aaGs8Hc2m0D+8aSt9mv09rCMYNIF35NB3D6KA2zSpcXJh/9ZVWrPlIUJfA8KYzodSWcCMUexEW24fjwR3w=="
       },
+      "Hamunii.BepInEx.AutoPlugin": {
+        "type": "Direct",
+        "requested": "[2.0.1, )",
+        "resolved": "2.0.1",
+        "contentHash": "UDVQtYOGU1v+xkYIRubm4zSIRtCW42kWgJ3sXIbqYSD1qSseH9gU44+zQMNRCy3BYXITtwWE3RqoyJdWUjDASA=="
+      },
       "Silksong.FsmUtil": {
         "type": "Direct",
         "requested": "[0.2.0, )",
@@ -82,7 +88,7 @@
         "contentHash": "65mB+bHjT6UCGCgO+/pYhpuGPf96rQ1Whwkut/x7cqVIW0DTndDFyWc/3bngzhnY/Y6IYtBMlXsU2ATq+CxpHg==",
         "dependencies": {
           "Mono.Cecil": "0.11.4",
-          "MonoMod.FsmUtil": "21.12.13.1",
+          "MonoMod.Utils": "21.12.13.1",
           "System.Collections.NonGeneric": "4.3.0",
           "System.ComponentModel.TypeConverter": "4.3.0",
           "System.IO.FileSystem.Primitives": "4.3.0",
@@ -91,7 +97,7 @@
           "System.Reflection.TypeExtensions": "4.7.0"
         }
       },
-      "MonoMod.FsmUtil": {
+      "MonoMod.Utils": {
         "type": "Transitive",
         "resolved": "21.12.13.1",
         "contentHash": "/H+0RMWqx/D1/fSuY5jhY6GFvqhdYdlnI7J3IfL8P6y4nJkoZDxqts6+RxWWOz4pbnJdWnxSjS8XG+Lq6rUi7w==",

@@ -19,8 +19,7 @@
 
   <PropertyGroup>
     <!--These properties will control the generated PluginInfo. Version is also used by various parts of the build system.-->
-    <BepInExPluginGuid>vmcse</BepInExPluginGuid>
-    <BepInExPluginName>VMCSE</BepInExPluginName>
+	  <AssemblyTitle>VMCSE</AssemblyTitle>
     <Version>0.1.0</Version>
   </PropertyGroup>
 
@@ -28,6 +27,10 @@
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.4.21" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.1.0" />
+    <PackageReference Include="Hamunii.BepInEx.AutoPlugin" Version="2.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Silksong.FsmUtil" Version="0.2.0" />
     <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
     <!--If you're unable resolve this dependency, check that you're using the nuget v3 package feed instead of v2.-->

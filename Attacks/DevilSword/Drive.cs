@@ -25,6 +25,10 @@ namespace VMCSE.Attacks.DevilSword
         public Drive(DevilCrestHandler handler) : base(handler)
         {
             EVENTNAME = "DRIVE";
+            ICON = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.DriveIcon.png");
+            UnityEngine.Object.DontDestroyOnLoad(ICON);
+            ICONGLOW = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.DriveIconGlow.png");
+            UnityEngine.Object.DontDestroyOnLoad(ICONGLOW);
         }
 
         private void RedColor()
@@ -162,6 +166,11 @@ namespace VMCSE.Attacks.DevilSword
             DriveEndDelayState.AddTransition("FINISHED", "Special End");
 
             SetStateAsInit(DriveAnticState.name);
+        }
+
+        public override bool OnManualCooldown()
+        {
+            return false;
         }
     }
 }

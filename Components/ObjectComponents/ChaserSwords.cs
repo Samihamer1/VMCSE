@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -28,8 +29,13 @@ namespace VMCSE.Components.ObjectComponents
 
             active = false;
             sprite.SetActive(false);
+            SetSpriteEnabled(false);
             burst.SetActive(false);
-            
+        }
+
+        private void SetSpriteEnabled(bool value)
+        {
+            sprite.GetComponent<MeshRenderer>().enabled = value;
         }
 
         public void Refresh()
@@ -37,6 +43,13 @@ namespace VMCSE.Components.ObjectComponents
             gameObject.SetActive(true);
             sprite.SetActive(true);
             burst.SetActive(false);
+            GameManager.instance.StartCoroutine(DelayedRefresh());
+        }
+
+        private IEnumerator DelayedRefresh()
+        {
+            yield return new WaitForSeconds(0.15f);
+            SetSpriteEnabled(true);
             active = true;
         }
 

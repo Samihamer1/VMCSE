@@ -1,14 +1,16 @@
-﻿using HutongGames.PlayMaker.Actions;
-using HutongGames.PlayMaker;
+﻿using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
+using Silksong.FsmUtil;
 using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UIElements;
+using VMCSE.AnimationHandler;
 using VMCSE.Attacks.DevilSword;
 using VMCSE.Components.ObjectComponents;
 using VMCSE.Weapons;
-using Silksong.FsmUtil;
 
 namespace VMCSE.Components
 {
@@ -35,7 +37,10 @@ namespace VMCSE.Components
             CreateWeapons();
             CreateStyle();
             SetupChaserBlades();
+
         }
+
+       
 
         #region chaser swords
 
@@ -51,16 +56,16 @@ namespace VMCSE.Components
             chaserBlades = new GameObject[4];
 
             Vector3[] positions = new Vector3[4];
-            positions[0] = new Vector3(1, 0.9f, 0);//top forward
-            positions[1] = new Vector3(0.3f, 0.9f, 0.01f); //top back
-            positions[2] = new Vector3(1, -0.9f, 0); //bottom forward
+            positions[0] = new Vector3(1, 0.9f, -0.01f);//top forward
+            positions[1] = new Vector3(0.2f, 1.2f, 0.01f); //top back
+            positions[2] = new Vector3(1, -0.9f, -0.01f); //bottom forward
             positions[3] = new Vector3(0.3f, -0.3f, 0.01f); //bottom back
 
             Quaternion[] rotations = new Quaternion[4];
-            rotations[0] = Quaternion.Euler(0, 0, 15f);
-            rotations[1] = Quaternion.Euler(0, 0, 15f);
-            rotations[2] = Quaternion.Euler(0, 0, 11f);
-            rotations[3] = Quaternion.Euler(0, 0, 11f);
+            rotations[0] = Quaternion.Euler(0, 0, 98f);
+            rotations[1] = Quaternion.Euler(0, 0, 98f);
+            rotations[2] = Quaternion.Euler(0, 0, 105f);
+            rotations[3] = Quaternion.Euler(0, 0, 105f);
 
 
             for (int i = 0; i < 4; i++)
@@ -85,13 +90,27 @@ namespace VMCSE.Components
 
             GameObject origSword = fsm.GetAction<SpawnObjectFromGlobalPool>("BossNeedle Cast", 5).gameObject.value;
             GameObject clone = GameObject.Instantiate(origSword);
+            clone.transform.localScale = new Vector3(0.85f, 0.85f, 1);
             GameObject.Destroy(clone.GetComponent<HeroShamanRuneEffect>());
             GameObject.Destroy(clone.GetComponent<PlayMakerFSM>());
             clone.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
 
+            //modifications to rotation/position
+            GameObject spriteObject = clone.Child("Sprite");
+            GameObject spawnEffectObject = spriteObject.Child("Rune Parent").Child("Shaman Rune Spawn");
+            GameObject burstEffectObject = clone.Child("Finger Blade Burst");
+
+            burstEffectObject.transform.SetRotation2D(-90f);
+            spawnEffectObject.transform.SetRotation2D(-90f);
+            spawnEffectObject.transform.localPosition = new Vector3(0,0,0);
+
             //color
-            clone.Child("Sprite").GetComponent<tk2dSprite>().color = new Color(1, 0.35f, 0.5f, 0.35f);
-            clone.Child("Sprite").Child("Rune Parent").Child("Shaman Rune Spawn").GetComponent<SpriteRenderer>().color = new Color(1, 0.35f, 0.25f);
+            spriteObject.GetComponent<tk2dSprite>().color = new Color(1, 1f, 1f, 0.5f);
+            spawnEffectObject.GetComponent<SpriteRenderer>().color = new Color(1, 0.35f, 0.25f);
+
+            //animation
+            spriteObject.GetComponent<tk2dSpriteAnimator>().library = AnimationManager.DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().library;
+            spriteObject.GetComponent<tk2dSpriteAnimator>().Play("ChaserBlade Idle");
 
             clone.transform.parent = chaserRoot.transform;
             clone.transform.localPosition = new Vector3(0, 0, 0);
@@ -249,6 +268,11 @@ namespace VMCSE.Components
                 return true;
             }
             return false;
+        }
+
+        public bool CanAirCharge()
+        {
+            return airCharge;
         }
 
         public void HitLanded(HitInstance instance)

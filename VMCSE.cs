@@ -8,8 +8,8 @@ using VMCSE.AnimationHandler;
 
 namespace VMCSE;
 
-[BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-public class VMCSE : BaseUnityPlugin
+[BepInAutoPlugin(id: "io.github.samihamer1.vmcse")]
+public partial class VMCSE : BaseUnityPlugin
 {
     internal static VMCSE Instance = null!;
     private Harmony harmony = null!;

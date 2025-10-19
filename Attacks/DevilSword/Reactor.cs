@@ -20,6 +20,10 @@ namespace VMCSE.Attacks.DevilSword
         public Reactor(DevilCrestHandler handler) : base(handler)
         {
             this.EVENTNAME = "REACTOR";
+            ICON = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.ReactorIcon.png");
+            UnityEngine.Object.DontDestroyOnLoad(ICON);
+            ICONGLOW = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.ReactorIconGlow.png");
+            UnityEngine.Object.DontDestroyOnLoad(ICONGLOW);
         }
 
         public override void CreateAttack()
@@ -44,9 +48,9 @@ namespace VMCSE.Attacks.DevilSword
             FsmState ReactorSummonState = fsm.AddState("Reactor Summon");
             ReactorSummonState.AddMethod(_ =>
             {
-                DevilCrestHandler handler = HeroController.instance.GetComponent<DevilCrestHandler>();
-                if (handler == null) { VMCSE.Instance.LogError("DevilCrestHandler not found!"); return; }
-                handler.RefreshChaserBlades();
+                //DevilCrestHandler handler = HeroController.instance.GetComponent<DevilCrestHandler>();
+                //if (handler == null) { VMCSE.Instance.LogError("DevilCrestHandler not found!"); return; }
+                //handler.RefreshChaserBlades();
             });
 
             FsmState ReactorBounceState = fsm.AddState("Reactor Bounce");
@@ -78,6 +82,11 @@ namespace VMCSE.Attacks.DevilSword
             ReactorBounceState.AddTransition("FINISHED", "Special End");
 
             SetStateAsInit(ReactorCheckState.name);
+        }
+
+        public override bool OnManualCooldown()
+        {
+            return !handler.CanAirCharge();
         }
 
         private GameObject CreateEffect()

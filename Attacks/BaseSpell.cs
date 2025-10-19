@@ -13,6 +13,8 @@ namespace VMCSE.Attacks
         public string EVENTNAME;
         private float cooldown = 0;
         private float lastUsedTime = 0;
+        public Sprite ICON;
+        public Sprite ICONGLOW;
 
         public BaseSpell(DevilCrestHandler handler) {
             if (HeroController.instance == null) { return; }
@@ -22,6 +24,8 @@ namespace VMCSE.Attacks
 
             this.handler = handler;
         }
+
+        public abstract bool OnManualCooldown();
 
         public void StartCooldownTimer(float cooldown)
         {
