@@ -83,7 +83,7 @@ namespace VMCSE
             devilConfig.downSlashEvent = "DEVILSWORD DOWNSLASH";
             //Crest Attacks has a state Idle to add to
             //Reference reaper to make it :)
-            devilConfig.heroAnimOverrideLib = AnimationManager.DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().Library;
+            devilConfig.heroAnimOverrideLib = AnimationManager.GetDevilSwordAnimator();
             
 
             devilCrest = new DevilCrest()

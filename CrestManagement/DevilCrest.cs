@@ -27,6 +27,7 @@ namespace VMCSE.CrestManagement
 
             ReviveNailArts(nailartFSM);
 
+
             HeroController.instance.gameObject.AddComponent<DevilCrestHandler>();
         }
 

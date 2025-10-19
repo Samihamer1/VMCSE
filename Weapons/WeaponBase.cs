@@ -65,7 +65,10 @@ namespace VMCSE.Weapons
 
             if (!spell.OnCooldown() && !spell.OnManualCooldown())
             {
-                spellfsm.SendEvent(spell.EVENTNAME);
+                //You could hold me at gunpoint, and I wouldn't be able to explain why this line of code is required.
+                //Just know that if you use SendEvent like a normal person, it doesn't recognise the global transition.
+                //But only the SECOND time the game loads.
+                spellfsm.ChangeState(spell.GetGlobalEvent());
             }
         }
 

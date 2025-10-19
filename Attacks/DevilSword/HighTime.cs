@@ -33,8 +33,17 @@ namespace VMCSE.Attacks.DevilSword
             highTime.GetComponent<DamageEnemies>().canTriggerBouncePod = true;
             highTime.GetComponent<DamageEnemies>().direction = 90;
             highTime.Child("Charge Slash Hornet Voice").SetActive(false);
-            Helper.SetPrivateField<tk2dSpriteAnimationClip>(highTime.GetComponent<tk2dSpriteAnimator>(), "currentClip", AnimationManager.DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().GetClipByName("HighTimeEffect"));
-            highTime.CopyPolygonColliderFromPrefab("DevilSwordHighTime");
+
+            tk2dSpriteAnimation? library = AnimationManager.GetDevilSwordAnimator();
+            if (library != null)
+            {
+                highTime.GetComponent<tk2dSpriteAnimator>().currentClip = library.GetClipByName("HighTimeEffect");
+            } else
+            {
+                VMCSE.Instance.LogError("HighTimeEffect failed to load - Devilsword animator was null.");
+            }
+
+                highTime.CopyPolygonColliderFromPrefab("DevilSwordHighTime");
             highTime.Child("Lunge Stopper").CopyPolygonColliderFromPrefab("DevilSwordHighTime");
 
             PlayMakerFSM nailartFSM = fsm;

@@ -1,4 +1,5 @@
-﻿using Silksong.FsmUtil;
+﻿using HutongGames.PlayMaker;
+using Silksong.FsmUtil;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,16 +12,17 @@ namespace VMCSE.Attacks
     {
         public DevilCrestHandler handler;
         public string EVENTNAME;
+        private FsmEvent GLOBALEVENT;
         private float cooldown = 0;
         private float lastUsedTime = 0;
-        public Sprite ICON;
-        public Sprite ICONGLOW;
+        public Sprite? ICON;
+        public Sprite? ICONGLOW;
 
         public BaseSpell(DevilCrestHandler handler) {
             if (HeroController.instance == null) { return; }
             PlayMakerFSM spellfsm = HeroController.instance.gameObject.LocateMyFSM("Silk Specials");
             fsm = spellfsm;
-            
+            EVENTNAME = "";
 
             this.handler = handler;
         }
@@ -44,9 +46,14 @@ namespace VMCSE.Attacks
             return true;
         }
 
+        public FsmEvent GetGlobalEvent()
+        {
+            return GLOBALEVENT;
+        }
+
         public void SetStateAsInit(string statename)
         {
-            fsm.AddGlobalTransition(EVENTNAME, statename);            
+            GLOBALEVENT = fsm.AddGlobalTransition(EVENTNAME, statename);            
         }
     }
 }

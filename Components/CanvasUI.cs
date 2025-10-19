@@ -51,8 +51,8 @@ namespace VMCSE.Components
             DirectionalCircleSprite = hudSettings.regularMode;
             DirectionalCircleSpriteGlow = hudSettings.glowRegular;
 
-            DoubleDirectionalCircleSprite = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.HorizontalSkill.png");
-            DoubleDirectionalCircleSpriteGlow = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.HorizontalSkillGlow.png");
+            DoubleDirectionalCircleSprite = ResourceLoader.LoadAsset<Sprite>("HorizontalSkillCircle");
+            DoubleDirectionalCircleSpriteGlow = ResourceLoader.LoadAsset<Sprite>("HorizontalSkillCircleGlow");
 
             BLANKSPRITE = new Sprite();
         }
@@ -121,13 +121,6 @@ namespace VMCSE.Components
             SpriteRenderer foregroundRenderer = SkillForeground.AddComponent<SpriteRenderer>();
 
             return SkillIcon;
-        }
-
-        private Sprite GetBackgroundIconFrom(GameObject toolIcon)
-        {
-            //Is this truly the best way to get this?
-            //Who cares.
-            return toolIcon.Child("Parent").Child("Canvas").Child("Background Image").Child("Radial Image").GetComponent<UnityEngine.UI.Image>().sprite;
         }
 
         private void UpdateIcon(GameObject? SkillIcon, BaseSpell? spell, Sprite background, Sprite backgroundGlow)

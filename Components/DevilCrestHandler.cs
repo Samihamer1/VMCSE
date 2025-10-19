@@ -109,7 +109,7 @@ namespace VMCSE.Components
             spawnEffectObject.GetComponent<SpriteRenderer>().color = new Color(1, 0.35f, 0.25f);
 
             //animation
-            spriteObject.GetComponent<tk2dSpriteAnimator>().library = AnimationManager.DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().library;
+            spriteObject.GetComponent<tk2dSpriteAnimator>().library = AnimationManager.GetDevilSwordAnimator();
             spriteObject.GetComponent<tk2dSpriteAnimator>().Play("ChaserBlade Idle");
 
             clone.transform.parent = chaserRoot.transform;

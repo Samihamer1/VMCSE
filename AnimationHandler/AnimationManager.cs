@@ -10,7 +10,7 @@ namespace VMCSE.AnimationHandler
     public static class AnimationManager
     {
         public const float SPRITESCALE = 3.25f;
-        public static GameObject DevilSwordAnimator;
+        private static GameObject? DevilSwordAnimator;
         public static void InitAnimations()
         {
             #region DevilSword animations
@@ -76,6 +76,16 @@ namespace VMCSE.AnimationHandler
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.ChaserBladeIdle.1.png", "ChaserBlade Idle", 24, tk2dSpriteAnimationClip.WrapMode.Loop, 1, 29, 236);
 
             #endregion
+        }
+
+        internal static tk2dSpriteAnimation? GetDevilSwordAnimator()
+        {
+            if (DevilSwordAnimator == null)
+            {
+                VMCSE.Instance.LogError("Devilsword animator not found");
+                return null;
+            }
+            return DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().library;
         }
 
         private static void SetFrameToTrigger(GameObject animatorObject, string animationName, int frame) {

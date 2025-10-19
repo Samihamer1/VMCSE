@@ -25,10 +25,8 @@ namespace VMCSE.Attacks.DevilSword
         public Drive(DevilCrestHandler handler) : base(handler)
         {
             EVENTNAME = "DRIVE";
-            ICON = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.DriveIcon.png");
-            UnityEngine.Object.DontDestroyOnLoad(ICON);
-            ICONGLOW = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.DriveIconGlow.png");
-            UnityEngine.Object.DontDestroyOnLoad(ICONGLOW);
+            ICON = ResourceLoader.LoadAsset<Sprite>("DriveIcon");
+            ICONGLOW = ResourceLoader.LoadAsset<Sprite>("DriveIconGlow");
         }
 
         private void RedColor()

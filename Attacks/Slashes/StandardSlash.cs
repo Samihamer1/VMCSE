@@ -11,7 +11,7 @@ namespace VMCSE.Attacks.Slashes
         public GameObject SlashObject { get; set; }
         public string SlashPrefabName { get; set; }
         public string AnimationName { get; set; }
-        public  GameObject SlashAnimatorObject { get; set; }
+        public  tk2dSpriteAnimation? SlashAnimator { get; set; }
         public Vector3 LocalPosition { get; set; }
         public Vector3 LocalScale { get; set; }
         public bool CreateRedSlash { get; set; }
@@ -30,8 +30,9 @@ namespace VMCSE.Attacks.Slashes
             SlashObject.GetComponent<NailSlash>().scale = LocalScale;
             SlashObject.GetComponent<NailSlash>().animName = AnimationName;
             SlashObject.GetComponent<NailSlash>().Awake();
-            SlashObject.GetComponent<tk2dSpriteAnimator>().Library = SlashAnimatorObject.GetComponent<tk2dSpriteAnimator>().Library;
-            
+            SlashObject.GetComponent<tk2dSpriteAnimator>().Library = SlashAnimator;
+
+
 
             PolygonCollider2D collider = SlashObject.GetComponent<PolygonCollider2D>();
             collider.points = prefab.GetComponent<PolygonCollider2D>().points;

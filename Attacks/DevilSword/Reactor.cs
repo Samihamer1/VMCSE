@@ -20,10 +20,8 @@ namespace VMCSE.Attacks.DevilSword
         public Reactor(DevilCrestHandler handler) : base(handler)
         {
             this.EVENTNAME = "REACTOR";
-            ICON = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.ReactorIcon.png");
-            UnityEngine.Object.DontDestroyOnLoad(ICON);
-            ICONGLOW = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.ReactorIconGlow.png");
-            UnityEngine.Object.DontDestroyOnLoad(ICONGLOW);
+            ICON = ResourceLoader.LoadAsset<Sprite>("ReactorIcon");
+            ICONGLOW = ResourceLoader.LoadAsset<Sprite>("ReactorIconGlow");
         }
 
         public override void CreateAttack()
@@ -94,7 +92,7 @@ namespace VMCSE.Attacks.DevilSword
             GameObject effect = new GameObject();
             effect.AddComponent<tk2dSprite>();
             tk2dSpriteAnimator animator = effect.AddComponent<tk2dSpriteAnimator>();
-            animator.Library = AnimationManager.DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().Library;
+            animator.Library = AnimationManager.GetDevilSwordAnimator();
 
             return effect;
         }

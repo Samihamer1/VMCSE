@@ -26,7 +26,14 @@ namespace VMCSE.Weapons
             horizontalSpell = new Drive(handler);
             upSpell = new RoundTrip(handler);
 
-            Initialise();
+            try
+            {
+                Initialise();
+            }
+            catch (Exception ex)
+            {
+                VMCSE.Instance.LogError(ex.Message + "\n" + ex.StackTrace); // goes to BepInEx/LogOutput.log
+            }
 
             configGroup = objectInfo.getConfigGroup();
             
@@ -87,7 +94,7 @@ namespace VMCSE.Weapons
             StandardSlash devilSlash1 = new StandardSlash
             {
                 SlashObject = devilslash,
-                SlashAnimatorObject = AnimationManager.DevilSwordAnimator,
+                SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
                 SlashPrefabName = "DevilSwordSlash",
                 AnimationName = "SlashEffect",
                 LocalPosition = new Vector3(-1.1f, 0.4f, -0.001f),
@@ -105,7 +112,7 @@ namespace VMCSE.Weapons
             StandardSlash devilSlash2 = new StandardSlash
             {
                 SlashObject = devilslashalt,
-                SlashAnimatorObject = AnimationManager.DevilSwordAnimator,
+                SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
                 SlashPrefabName = "DevilSwordSlashAlt",
                 AnimationName = "SlashAltEffect",
                 LocalPosition = new Vector3(-0.6f, 0.4f, -0.001f),
@@ -123,7 +130,7 @@ namespace VMCSE.Weapons
             StandardSlash devilSlash3 = new StandardSlash
             {
                 SlashObject = devilupslash,
-                SlashAnimatorObject = AnimationManager.DevilSwordAnimator,
+                SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
                 SlashPrefabName = "DevilSwordSlashUp",
                 AnimationName = "SlashUpEffect",
                 LocalPosition = new Vector3(-1f, 1.1f, -0.001f),
@@ -141,7 +148,7 @@ namespace VMCSE.Weapons
             StandardSlash devildownspike = new StandardSlash
             {
                 SlashObject = devildownslash,
-                SlashAnimatorObject = AnimationManager.DevilSwordAnimator,
+                SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
                 SlashPrefabName = "DevilSwordDownspike",
                 AnimationName = "DownSpikeEffect",
                 LocalPosition = new Vector3(),

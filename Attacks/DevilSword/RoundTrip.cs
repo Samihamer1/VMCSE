@@ -19,10 +19,8 @@ namespace VMCSE.Attacks.DevilSword
         public RoundTrip(DevilCrestHandler handler) : base(handler)
         {
             EVENTNAME = "ROUNDTRIP";
-            ICON = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.RoundTripIcon.png");
-            UnityEngine.Object.DontDestroyOnLoad(ICON);
-            ICONGLOW = ResourceLoader.LoadSprite("VMCSE.Resources.UI.Icons.RoundTripIconGlow.png");
-            UnityEngine.Object.DontDestroyOnLoad(ICONGLOW);
+            ICON = ResourceLoader.LoadAsset<Sprite>("RoundTripIcon");
+            ICONGLOW = ResourceLoader.LoadAsset<Sprite>("RoundTripIconGlow");
         }
 
         public override void CreateAttack()
@@ -83,7 +81,7 @@ namespace VMCSE.Attacks.DevilSword
             GameObject sword = new GameObject("RoundTrip");
             sword.AddComponent<tk2dSprite>();
             tk2dSpriteAnimator animator = sword.AddComponent<tk2dSpriteAnimator>();
-            animator.library = AnimationManager.DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().library;
+            animator.library = AnimationManager.GetDevilSwordAnimator();
             animator.Play("RoundTripEffect");
             BoxCollider2D collider = sword.AddComponent<BoxCollider2D>();
             collider.isTrigger = true;
