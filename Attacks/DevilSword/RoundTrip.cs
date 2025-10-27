@@ -14,11 +14,10 @@ namespace VMCSE.Attacks.DevilSword
 {
     public class RoundTrip : BaseSpell
     {
-        private const float SPEED = 15f;
         private GameObject activeSword;
         public RoundTrip(DevilCrestHandler handler) : base(handler)
         {
-            EVENTNAME = "ROUNDTRIP";
+            EVENTNAME = EventNames.ROUNDTRIP;
             ICON = ResourceLoader.LoadAsset<Sprite>("RoundTripIcon");
             ICONGLOW = ResourceLoader.LoadAsset<Sprite>("RoundTripIconGlow");
         }
@@ -46,7 +45,14 @@ namespace VMCSE.Attacks.DevilSword
             ThrowSwordState.AddMethod(_ =>
             {
                 CreateSwordObject();
-                
+
+                if (handler.ConsumeChaserBlade())
+                {
+                    activeSword.name = AttackNames.ROUNDTRIPRED;
+                    activeSword.GetComponent<tk2dSprite>().color = new Color(1, 0.25f, 0.25f, 0.5f);
+                    activeSword.GetComponent<DamageEnemies>().stepsPerHit = 6;
+                    activeSword.GetComponent<DamageEnemies>().nailDamageMultiplier = 0.1f;
+                }
             });
 
             FsmState ThrowRecoilState = fsm.AddState("Throw Recoil");
@@ -78,7 +84,7 @@ namespace VMCSE.Attacks.DevilSword
 
         private void CreateSwordObject()
         {
-            GameObject sword = new GameObject("RoundTrip");
+            GameObject sword = new GameObject(AttackNames.ROUNDTRIP);
             sword.AddComponent<tk2dSprite>();
             tk2dSpriteAnimator animator = sword.AddComponent<tk2dSpriteAnimator>();
             animator.library = AnimationManager.GetDevilSwordAnimator();
@@ -106,7 +112,7 @@ namespace VMCSE.Attacks.DevilSword
             dmg.damageFSMEvent = "";
             dmg.dealtDamageFSMEvent = "";
             dmg.stunDamage = 0.1f;
-            
+            dmg.isHeroDamage = true;
 
             Rigidbody2D rigidbody = sword.AddComponent<Rigidbody2D>();
             rigidbody.bodyType = RigidbodyType2D.Kinematic;
@@ -117,6 +123,38 @@ namespace VMCSE.Attacks.DevilSword
             sword.AddComponent<RoundTripSword>();
 
             activeSword = sword;
+
+            if (!handler.GetTrigger().IsInTrigger()) { return; }
+
+            //extra orbiting swords
+            CreateOrbitingSwords();
+
+            
+        }
+
+        private void CreateOrbitingSwords()
+        {
+            GameObject sword1 = GameObject.Instantiate(activeSword);
+            GameObject sword2 = GameObject.Instantiate(activeSword);
+
+            OrbitingRoundTripSword sword1orbit = CreateOrbitingSword(sword1);
+            OrbitingRoundTripSword sword2orbit = CreateOrbitingSword(sword2);
+            sword2orbit.SetTime(0.5f); //so it is on the other side of orbit
+        }
+
+        private OrbitingRoundTripSword CreateOrbitingSword(GameObject sword1)
+        {
+            sword1.name = AttackNames.ROUNDTRIPMINI;
+            sword1.transform.parent = activeSword.transform;
+            GameObject.Destroy(sword1.GetComponent<RoundTripSword>());
+            sword1.GetComponent<DamageEnemies>().nailDamageMultiplier = 0.1f;
+            sword1.GetComponent<DamageEnemies>().stepsPerHit = 16;
+            OrbitingRoundTripSword orbit = sword1.AddComponent<OrbitingRoundTripSword>();
+            sword1.SetActive(true);
+            sword1.GetComponent<tk2dSpriteAnimator>().Play("RoundTripEffect");
+            sword1.GetComponent<tk2dSprite>().color = ColorConstants.DanteRed;
+
+            return orbit;
         }
 
     }

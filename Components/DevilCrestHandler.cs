@@ -18,9 +18,10 @@ namespace VMCSE.Components
     {
         private List<WeaponBase> allWeapons = new List<WeaponBase>();
 
-        private List<WeaponBase> equippedWeapons = new List<WeaponBase>();
+        private List<WeaponBase> equippedWeapons = new List<WeaponBase>();        
         private WeaponBase equippedWeapon;
         private StyleMeter styleMeter;
+        private DevilTrigger devilTrigger;
 
         private GameObject chaserRoot;
         private GameObject[] chaserBlades = new GameObject[4];
@@ -36,11 +37,10 @@ namespace VMCSE.Components
         {
             CreateWeapons();
             CreateStyle();
+            CreateTrigger();
             SetupChaserBlades();
-
+            PatchBind();
         }
-
-       
 
         #region chaser swords
 
@@ -141,6 +141,12 @@ namespace VMCSE.Components
 
             sword.PopSword();
             currentChaserIndex++;
+
+            if (devilTrigger.IsInTrigger() && currentChaserIndex == 4)
+            {
+                RefreshChaserBlades();
+            }
+
             return true;
         }
 
@@ -149,6 +155,17 @@ namespace VMCSE.Components
         private void CreateStyle()
         {
             styleMeter = HeroController.instance.gameObject.AddComponent<StyleMeter>();
+        }
+
+        private void CreateTrigger()
+        {
+            devilTrigger = HeroController.instance.gameObject.AddComponent<DevilTrigger>();
+            devilTrigger.InitialiseTriggerEffects();
+        }
+
+        public DevilTrigger GetTrigger()
+        {
+            return devilTrigger;
         }
 
         private void CreateWeapons()
@@ -189,6 +206,12 @@ namespace VMCSE.Components
         public bool isWeaponEquipped(WeaponBase weapon)
         {
             return equippedWeapon == weapon;
+        }
+
+        public bool isWeaponEquipped(string weaponName)
+        {
+            if (equippedWeapon.name == null) { return false; } //dont think its needed but still
+            return equippedWeapon.name == weaponName;
         }
 
         private void Cast()
@@ -277,12 +300,60 @@ namespace VMCSE.Components
 
         public void HitLanded(HitInstance instance)
         {
+            if (!instance.IsHeroDamage) { return; }
+
             styleMeter.HitLanded(instance);
+            devilTrigger.HitLanded(instance);
         }
 
         public void GotHit()
         {
             styleMeter.LargeLoss();
         }
+
+        #region helpers
+
+        public bool IsDevilEquipped()
+        {
+            return HeroController.instance.playerData.CurrentCrestID == "Devil";
+        }
+
+        #endregion
+
+        #region bind changes
+        private void PatchBind()
+        {
+            PlayMakerFSM spellControl = gameObject.LocateMyFSM("Bind");
+
+            FsmState? BindTypeState = spellControl.GetState("Bind Type");
+            FsmState? BindBurstState = spellControl.GetState("Bind Burst");
+            if (BindTypeState == null) { VMCSE.Instance.LogError("Bind Type state not found in Spell Control. Incompatibility with another mod?"); return; }
+            if (BindBurstState == null) { VMCSE.Instance.LogError("Bind Burst state not found in Spell Control. Incompatibility with another mod?"); return; }
+
+            BindTypeState.AddMethod(_ =>
+            {
+                if (!IsDevilEquipped()) { return; }
+                spellControl.SendEvent("DEVIL");
+            });
+
+            BindBurstState.AddMethod(_ =>
+            {
+                devilTrigger.StartTrigger();
+                if (devilTrigger.IsInTrigger())
+                {
+                    RefreshChaserBlades();
+                }
+            });
+
+            FsmState SetDevilState = spellControl.CopyState("Set Normal", "Set Devil");
+            SetDevilState.GetAction<SetIntValue>(0).intValue = 2; //Heal amount
+            SetDevilState.GetAction<SetIntValue>(1).intValue = 1; //Bind amount (how many times you bind in a row)
+            SetDevilState.GetAction<SetFloatValue>(2).floatValue = 1.2f; //Bind time
+
+            //Transitions
+            spellControl.AddTransition("Bind Type", "DEVIL", SetDevilState.name);
+        }
+
+        #endregion
     }
 }

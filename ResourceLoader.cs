@@ -18,21 +18,6 @@ namespace VMCSE
 
         private static readonly Dictionary<string, string> imagePaths = new()
         {
-            ["Style1BG"] = "VMCSE.Resources.UI.Style.Style1BG.png",
-            ["Style1FG"] = "VMCSE.Resources.UI.Style.Style1FG.png",
-            ["Style2BG"] = "VMCSE.Resources.UI.Style.Style2BG.png",
-            ["Style2FG"] = "VMCSE.Resources.UI.Style.Style2FG.png",
-            ["Style3BG"] = "VMCSE.Resources.UI.Style.Style3BG.png",
-            ["Style3FG"] = "VMCSE.Resources.UI.Style.Style3FG.png",
-            ["Style4BG"] = "VMCSE.Resources.UI.Style.Style4BG.png",
-            ["Style4FG"] = "VMCSE.Resources.UI.Style.Style4FG.png",
-            ["Style5BG"] = "VMCSE.Resources.UI.Style.Style5BG.png",
-            ["Style5FG"] = "VMCSE.Resources.UI.Style.Style5FG.png",
-            ["Style6BG"] = "VMCSE.Resources.UI.Style.Style6BG.png",
-            ["Style6FG"] = "VMCSE.Resources.UI.Style.Style6FG.png",
-            ["Style7BG"] = "VMCSE.Resources.UI.Style.Style7BG.png",
-            ["Style7FG"] = "VMCSE.Resources.UI.Style.Style7FG.png",
-
             ["DriveIcon"] = "VMCSE.Resources.UI.Icons.DriveIcon.png",
             ["DriveIconGlow"] = "VMCSE.Resources.UI.Icons.DriveIconGlow.png",
             ["HorizontalSkillCircle"] = "VMCSE.Resources.UI.Icons.HorizontalSkill.png",
@@ -41,6 +26,31 @@ namespace VMCSE
             ["ReactorIconGlow"] = "VMCSE.Resources.UI.Icons.ReactorIconGlow.png",
             ["RoundTripIcon"] = "VMCSE.Resources.UI.Icons.RoundTripIcon.png",
             ["RoundTripIconGlow"] = "VMCSE.Resources.UI.Icons.RoundTripIconGlow.png",
+        };
+
+
+        //Tiled images are those with the pivot point Vector2.zero, so that they can be used with fillAmount
+        private static readonly Dictionary<string, string> tiledImagePaths = new()
+        {
+            ["DevilTriggerFG"] = "VMCSE.Resources.UI.Trigger.FG.png",
+            ["DevilTriggerBG"] = "VMCSE.Resources.UI.Trigger.BG.png",
+            ["DevilTriggerFGv2"] = "VMCSE.Resources.UI.Trigger.FGv2.png",
+            ["DevilTriggerBGv2"] = "VMCSE.Resources.UI.Trigger.BGv2.png",
+            ["DevilTriggerSplitBar"] = "VMCSE.Resources.UI.Trigger.SplitBar.png",
+            ["Style1FG"] = "VMCSE.Resources.UI.Style.Style1FG.png",
+            ["Style2FG"] = "VMCSE.Resources.UI.Style.Style2FG.png",
+            ["Style3FG"] = "VMCSE.Resources.UI.Style.Style3FG.png",
+            ["Style4FG"] = "VMCSE.Resources.UI.Style.Style4FG.png",
+            ["Style5FG"] = "VMCSE.Resources.UI.Style.Style5FG.png",
+            ["Style6FG"] = "VMCSE.Resources.UI.Style.Style6FG.png",
+            ["Style7FG"] = "VMCSE.Resources.UI.Style.Style7FG.png",
+            ["Style1BG"] = "VMCSE.Resources.UI.Style.Style1BG.png",
+            ["Style2BG"] = "VMCSE.Resources.UI.Style.Style2BG.png",
+            ["Style3BG"] = "VMCSE.Resources.UI.Style.Style3BG.png",
+            ["Style4BG"] = "VMCSE.Resources.UI.Style.Style4BG.png",
+            ["Style5BG"] = "VMCSE.Resources.UI.Style.Style5BG.png",
+            ["Style6BG"] = "VMCSE.Resources.UI.Style.Style6BG.png",
+            ["Style7BG"] = "VMCSE.Resources.UI.Style.Style7BG.png",
         };
 
         #endregion 
@@ -55,14 +65,35 @@ namespace VMCSE
 
         private static void LoadSpriteToAssets(string name, string path)
         {
-            var type = typeof(Sprite);
-
             Sprite sprite = LoadSprite(path);
             if (sprite == null)
             {
                 VMCSE.Instance.LogError("Sprite " + name + " not able to load - path incorrect?");
                 return;
             }
+
+            sprite.name = name;
+
+            LoadSpriteToAssets(name, sprite);
+        }
+
+        private static void LoadTiledSpriteToAssets(string name, string path)
+        {
+            Sprite sprite = LoadTiledSprite(path);
+            if (sprite == null)
+            {
+                VMCSE.Instance.LogError("Sprite " + name + " not able to load - path incorrect?");
+                return;
+            }
+
+            sprite.name = name;
+
+            LoadSpriteToAssets(name, sprite);
+        }
+
+        private static void LoadSpriteToAssets(string name, Sprite sprite)
+        {
+            var type = typeof(Sprite);
 
             Object.DontDestroyOnLoad(sprite);
 
@@ -88,6 +119,12 @@ namespace VMCSE
             {
                 var path = imagePaths[key];
                 LoadSpriteToAssets(key, path);
+            }
+
+            foreach (string key in tiledImagePaths.Keys)
+            {
+                var path = tiledImagePaths[key];
+                LoadTiledSpriteToAssets(key, path);
             }
         }
 
@@ -160,6 +197,12 @@ namespace VMCSE
         {
             Texture2D texture = LoadTexture2D(path);
             return Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), Vector2.one / 2, 100.0f);
+        }
+
+        public static Sprite LoadTiledSprite(string path)
+        {
+            Texture2D texture = LoadTexture2D(path);
+            return Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), Vector2.zero, 100.0f);
         }
     }
 }

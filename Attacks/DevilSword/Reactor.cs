@@ -19,7 +19,7 @@ namespace VMCSE.Attacks.DevilSword
 
         public Reactor(DevilCrestHandler handler) : base(handler)
         {
-            this.EVENTNAME = "REACTOR";
+            this.EVENTNAME = EventNames.REACTOR;
             ICON = ResourceLoader.LoadAsset<Sprite>("ReactorIcon");
             ICONGLOW = ResourceLoader.LoadAsset<Sprite>("ReactorIconGlow");
         }

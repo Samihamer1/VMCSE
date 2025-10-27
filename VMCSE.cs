@@ -8,6 +8,7 @@ using VMCSE.AnimationHandler;
 
 namespace VMCSE;
 
+[BepInDependency("org.silksong-modding.fsmutil")]
 [BepInAutoPlugin(id: "io.github.samihamer1.vmcse")]
 public partial class VMCSE : BaseUnityPlugin
 {

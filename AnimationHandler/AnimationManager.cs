@@ -56,6 +56,7 @@ namespace VMCSE.AnimationHandler
 
             //HighTime Effect
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.HighTimeEffect.spritesheet.png", "HighTimeEffect", 24, tk2dSpriteAnimationClip.WrapMode.Once, 4, 322, 304);
+            SetFrameToTriggerRedSlash(DevilSwordAnimator, "HighTimeEffect", 2);
 
             //Reactor Effect
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.Reactor.spritesheet.png", "ReactorEffect", 36, tk2dSpriteAnimationClip.WrapMode.Once, 6, 158, 38);
@@ -74,6 +75,16 @@ namespace VMCSE.AnimationHandler
 
             //ChaserBladeIdle
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.ChaserBladeIdle.1.png", "ChaserBlade Idle", 24, tk2dSpriteAnimationClip.WrapMode.Loop, 1, 29, 236);
+
+            //MillionStab
+            CloneAnimationTo(DevilSwordAnimator, AnimationLibraryNames.WANDERER, "Slash_Charged Effect", "MillionStab", 20);
+
+            //MillionStabFast
+            CloneAnimationTo(DevilSwordAnimator, AnimationLibraryNames.WANDERER, "Slash_Charged Effect", "MillionStabFast", 30);
+
+            //Dash Stab Effect
+            CloneAnimationTo(DevilSwordAnimator, "Knight", "DashStabEffect", "DashStabEffect", 24);
+            SetFrameToTriggerRedSlash(DevilSwordAnimator, "DashStabEffect", 3);
 
             #endregion
         }
@@ -112,7 +123,16 @@ namespace VMCSE.AnimationHandler
                 if (config == null) { continue; }
 
                 tk2dSpriteAnimation library = config.heroAnimOverrideLib;
-                if (library == null) { continue; }
+                if (library == null) {
+                    if (libraryName == "Knight")
+                    { //in case of default animation
+                        library = HeroController.instance.GetComponent<tk2dSpriteAnimator>().library; //setting library to default
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
                 if (library.name == libraryName)
                 {
@@ -131,6 +151,7 @@ namespace VMCSE.AnimationHandler
                     animation.clips = list.ToArray();
                     Helper.SetPrivateField<bool>(animation, "isValid", false); //to refresh the animation lookup
                     animation.ValidateLookup();
+                    return;
                 }
             }
         }

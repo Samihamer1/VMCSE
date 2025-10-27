@@ -75,6 +75,7 @@
 
   <ItemGroup>
     <Folder Include="Resources\DevilSword\DriveAntic\" />
+    <Folder Include="Resources\UI\Trigger\" />
   </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(SilksongFolder)' != ''">

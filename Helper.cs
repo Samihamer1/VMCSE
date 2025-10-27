@@ -1,4 +1,5 @@
-﻿using HutongGames.PlayMaker;
+﻿using GlobalEnums;
+using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using Silksong.FsmUtil;
 using System;
@@ -7,32 +8,17 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UIElements;
 using VMCSE.AnimationHandler;
 
 namespace VMCSE
 {
-    public static class Helper
+    internal static class Helper
     {
         public static GameObject Child(this GameObject go, string name)
         {
             return go.transform.Find(name).gameObject;
-        }
-
-        public static void CopyPolygonColliderFromPrefab(this GameObject goToCopyInto, string prefabname)
-        {
-            GameObject prefab = ResourceLoader.bundle.LoadAsset<GameObject>(prefabname);
-            if (prefab == null)
-            {
-                throw new ArgumentException("Prefab '" + prefabname + "' not found in VMCSE AssetBundle!");
-            }
-
-
-            PolygonCollider2D collider = goToCopyInto.GetComponent<PolygonCollider2D>();
-            collider.points = prefab.GetComponent<PolygonCollider2D>().points;
-
-            //To account for the increased anim size
-            Helper.ScalePolygonCollider(collider, (float)Math.Sqrt(AnimationManager.SPRITESCALE));
         }
         public static void SetPrivateField<T>(object instance, string fieldName, T value)
         {
@@ -56,17 +42,7 @@ namespace VMCSE
 
             return @new;
         }
-        private static FsmEvent GetFsmEvent(this PlayMakerFSM fsm, string eventName)
-        {
-            foreach (FsmEvent Event in fsm.Fsm.Events)
-            {
-                if (Event.Name == eventName) { return Event; }
-
-            }
-            
-
-            return null;
-        }
+        
 
         public static T GetAction<T>(this FsmState state, int index) where T : FsmStateAction
         {
@@ -120,6 +96,68 @@ namespace VMCSE
             }
 
             collider.points = points;
+        }
+
+        /// <summary>
+        /// Adds a prebuilt DamageEnemies to a gameobject. use after collider is already added. Customise at will afterwards.
+        /// </summary>
+        /// <param name="target">The gameobject to be added to</param>
+        /// <returns>The created DamageEnemies component</returns>
+        public static DamageEnemies AddDamageEnemies(this GameObject target)
+        {
+            //just because setting it up through code is so long
+            DamageEnemies dmg = target.AddComponent<DamageEnemies>();
+            dmg.useNailDamage = true;
+            dmg.nailDamageMultiplier = 1f;
+            dmg.magnitudeMult = 1f;
+            dmg.damageMultPerHit = new float[0];
+            dmg.sourceIsHero = true;
+            dmg.isNailAttack = true;
+            dmg.attackType = AttackTypes.Nail;
+            dmg.corpseDirection = new TeamCherry.SharedUtils.OverrideFloat();
+            dmg.corpseMagnitudeMult = new TeamCherry.SharedUtils.OverrideFloat();
+            dmg.currencyMagnitudeMult = new TeamCherry.SharedUtils.OverrideFloat();
+            dmg.slashEffectOverrides = new GameObject[0];
+            dmg.DealtDamage = new UnityEngine.Events.UnityEvent();
+            dmg.damageFSMEvent = "";
+            dmg.dealtDamageFSMEvent = "";
+            dmg.stunDamage = 1f;
+            dmg.Tinked = new UnityEngine.Events.UnityEvent();
+            dmg.isHeroDamage = true;
+
+
+            target.layer = (int)PhysLayers.HERO_ATTACK;
+
+            return dmg;
+        }
+
+        /// <summary>
+        /// Copies the PolygonCollider2D points from the given prefab name (within asset bundle) to the target gameobject.
+        /// If there is no PolygonCollider2D, one is added. The created collider has isTrigger set to true.
+        /// </summary>
+        /// <param name="goToCopyInto">The gameobject to be copied to</param>
+        /// <param name="prefabname">The name of the prefab within the asset bundle</param>
+        public static void CopyPolygonColliderFromPrefab(this GameObject goToCopyInto, string prefabname)
+        {
+            GameObject prefab = ResourceLoader.bundle.LoadAsset<GameObject>(prefabname);
+            if (prefab == null)
+            {
+                throw new ArgumentException("Prefab '" + prefabname + "' not found in VMCSE AssetBundle!");
+            }
+
+
+            PolygonCollider2D collider = goToCopyInto.GetComponent<PolygonCollider2D>();
+
+            if (collider == null)
+            {
+                collider = goToCopyInto.AddComponent<PolygonCollider2D>();
+                collider.isTrigger = true;
+            }
+
+            collider.points = prefab.GetComponent<PolygonCollider2D>().points;
+
+            //To account for the increased anim size
+            Helper.ScalePolygonCollider(collider, (float)Math.Sqrt(AnimationManager.SPRITESCALE));
         }
 
         #endregion

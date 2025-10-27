@@ -48,7 +48,7 @@ namespace VMCSE.Weapons
             InitSpell(horizontalSpell);
 
             InitAttack(specialDownSlash);
-
+            InitAttack(specialDashStab);
         }
 
         private void InitSpell(BaseSpell? spell)
@@ -115,6 +115,11 @@ namespace VMCSE.Weapons
             }
 
             return weaponEvent;
+        }
+
+        public string? GetName()
+        {
+            return name;
         }
     }
 }

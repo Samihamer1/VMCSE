@@ -23,7 +23,7 @@ namespace VMCSE.Components
         {
             Texture2D texture = ResourceLoader.LoadTexture2D(path);
 
-            Sprite sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), Vector2.zero, 100.0f);
+            Sprite sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), Vector2.zero, 100.0f);            
 
             SpriteRenderer renderer = GetComponent<SpriteRenderer>();
 

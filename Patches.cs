@@ -66,10 +66,10 @@ public static class Patches
         }
     }
 
-    //Hit instance for style meter
+    //Patching TakeDamage to know when enemies are hit
     [HarmonyPatch(typeof(HealthManager), nameof(HealthManager.TakeDamage))]
     [HarmonyPostfix]
-    private static void SendHitToManager(HitInstance hitInstance)
+    private static void SendHitToManager(ref HitInstance hitInstance)
     {
         if (HeroController.instance == null) { return; }
 
@@ -77,9 +77,16 @@ public static class Patches
         if (handler == null) { return; }
 
         handler.HitLanded(hitInstance);
+
+        if (!hitInstance.IsHeroDamage) { return; } //Must be a hero attack
+        if (!handler.IsDevilEquipped()) { return; } // Must have devil crest equipped
+        if (handler.GetTrigger().IsInTrigger()) { return; } // If in trigger, ignore the damage nerf
+        
+
+        hitInstance.Multiplier *= 0.75f; //Reduce player damage by 25% while using Devil. This is for balancing purposes, and for longer combos.
     }
 
-    //got hit for style meter
+    //Patching TakeDamage to know when player was hit
     [HarmonyPatch(typeof(HeroController), nameof(HeroController.instance.TakeDamage), typeof(GameObject), typeof(GlobalEnums.CollisionSide), typeof(int), typeof(GlobalEnums.HazardType), typeof(GlobalEnums.DamagePropertyFlags))]
     [HarmonyPostfix]
     private static void SendGotHitToManager()

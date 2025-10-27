@@ -12,6 +12,7 @@ namespace VMCSE.Attacks.DevilSword
     {
         private GameObject downslashObject;
 
+
         public DevilSwordDownslash(GameObject downslashObject)
         {
             this.downslashObject = downslashObject;

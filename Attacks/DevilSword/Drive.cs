@@ -24,7 +24,7 @@ namespace VMCSE.Attacks.DevilSword
         private const float COOLDOWNTIME = 1f;
         public Drive(DevilCrestHandler handler) : base(handler)
         {
-            EVENTNAME = "DRIVE";
+            EVENTNAME = EventNames.DRIVE;
             ICON = ResourceLoader.LoadAsset<Sprite>("DriveIcon");
             ICONGLOW = ResourceLoader.LoadAsset<Sprite>("DriveIconGlow");
         }
@@ -38,10 +38,9 @@ namespace VMCSE.Attacks.DevilSword
         private void ModifySlash(GameObject slash)
         {
             slash.GetComponent<NailSlash>().hc = HeroController.instance;
-            slash.GetComponent<DamageEnemies>().doesNotTink = true;
             slash.GetComponent<DamageEnemies>().silkGeneration = HitSilkGeneration.None;
-            slash.GetComponent<DamageEnemies>().nailDamageMultiplier = 0.75f;
-            slash.GetComponent<NailSlashTravel>().travelDistance = new Vector2(-8, 0);
+            slash.GetComponent<DamageEnemies>().nailDamageMultiplier = 0.45f;
+            slash.GetComponent<NailSlashTravel>().travelDistance = new Vector2(-9, 0);
             slash.Child("Particle Slash Trail").GetComponent<ParticleSystem>().startColor = new Color(1, 0.2f, 0.2f);
             slash.SetActive(true);
 
@@ -57,8 +56,10 @@ namespace VMCSE.Attacks.DevilSword
             GameObject shaman = attacks.Child("Shaman");
             driveObject = CrestManager.CloneSlashObject(shaman.Child("Slash"), specialattacks);
             ModifySlash(driveObject);
+            driveObject.name = AttackNames.DRIVESLASH1;
             driveAltObject = CrestManager.CloneSlashObject(shaman.Child("AltSlash"), specialattacks);
             ModifySlash(driveAltObject);
+            driveAltObject.name = AttackNames.DRIVESLASH2;
         }
 
         private IEnumerator ChargeUp()

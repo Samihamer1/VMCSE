@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace VMCSE.Components
@@ -8,7 +9,9 @@ namespace VMCSE.Components
         private GameObject? StyleRoot;
         private GameObject[] StyleForegrounds = new GameObject[7];
         private GameObject[] StyleBackgrounds = new GameObject[7];
-        private float[] meterlevels = { 20, 30, 40, 55, 60, 70, 90 };
+        private float[] meterlevels = { 20, 40, 55, 70, 75, 80, 90 };
+        private Dictionary<string, float> recentlyHitAttacks = new Dictionary<string, float>();
+        private int attackStackSize = 6; // how many differently named attacks can be currently stored for scaling style gain
         private float meterloss = 4f;
         private float metermax;
         private float meter = 0;
@@ -16,6 +19,9 @@ namespace VMCSE.Components
         private float rankDecayTimer = 0;
         private int maxRank = 6;
         private int rank = 0;
+
+        private float BASESTYLEGAIN = 10;
+        private int BASEHITLIMIT = 6;
         private void CreateStyleUI()
         {
             if (HudCanvas.instance.gameObject == null) { return; }
@@ -63,6 +69,9 @@ namespace VMCSE.Components
 
         private void AddFullStyleUI(int index)
         {
+            string bgAsset = "Style" + index + "BG";
+            string fgAsset = "Style" + index + "FG";
+
             GameObject bg = AddPartialStyleUI("VMCSE.Resources.UI.Style.Style" + index + "BG.png");
             GameObject fg = AddPartialStyleUI("VMCSE.Resources.UI.Style.Style" + index + "FG.png");
 
@@ -72,22 +81,90 @@ namespace VMCSE.Components
             StyleBackgrounds[index-1] = bg;
             StyleForegrounds[index-1] = fg;
         }
+
+        //returns amount of style gained
+        private float ProcessHitLanded(string nameOfAttack)
+        {
+            //Get non scaled style gain and hit limit
+            float gainedStyle = BASESTYLEGAIN;
+            float hitLimit = BASEHITLIMIT;
+            if (AttackStyleGains.attackStyleGains.ContainsKey(nameOfAttack))
+            {
+                StyleGain stylegain = AttackStyleGains.attackStyleGains[nameOfAttack];
+                gainedStyle = stylegain.GetStyleGain();
+                hitLimit = stylegain.GetHitsTilNoGain();
+
+                //in case of no limit, just add
+                if (stylegain is StyleGainNoLimit)
+                {
+                    return gainedStyle;
+                }
+            }
+
+            //check if attack is stored within the list
+            float numberOfHits;
+            bool found = recentlyHitAttacks.TryGetValue(nameOfAttack, out numberOfHits);
+
+            if (found)
+            {
+                //increment stored hit amount and apply scaling
+                recentlyHitAttacks[nameOfAttack] = Math.Clamp(numberOfHits+1, 1, hitLimit);
+
+                float halfLimit = (float)Math.Round(hitLimit / 2);
+                if (halfLimit < 1)
+                {
+                    halfLimit = 1; //no shenanigans
+                }
+                float scaleRatio = 1-((numberOfHits - halfLimit) / halfLimit);
+
+                //scaling applies linearly for each hit over half, reducing it at max to 0 gain
+                gainedStyle *= scaleRatio;
+                return gainedStyle;
+            }
+
+            //if not found, and not at stack limit
+            if (recentlyHitAttacks.Count < attackStackSize)
+            {
+                //add as usual, non scaled
+                recentlyHitAttacks[nameOfAttack] = 1;
+                return gainedStyle;
+            }
+
+            //if at stack limit, replace entry with largest number of hits with the new attack
+            string largestKey = "";
+            float storedLargestVal = 0;
+            foreach (string key in recentlyHitAttacks.Keys)
+            {
+                float currentVal = recentlyHitAttacks[key];
+                if (storedLargestVal < currentVal) { storedLargestVal = currentVal; largestKey = key; }
+            }
+
+            recentlyHitAttacks.Remove(largestKey);
+            recentlyHitAttacks[nameOfAttack] = 1;
+            return gainedStyle;
+        }
+
         public void HitLanded(HitInstance instance)
         {
             CreateStyleUI();
 
-            AddToMeter(15);
+            float styleGain = ProcessHitLanded(instance.Source.name);
+
+            AddToMeter(styleGain);
         }
 
         public void LargeLoss()
         {
-            rank -= 1;
+            rank -= 2;
             rank = Math.Clamp(rank, 0, maxRank);
             metermax = meterlevels[rank];
             if (meter > metermax * 0.3f)
             {
                 meter = metermax * 0.3f;
             }
+
+            //reset stored attack list
+            recentlyHitAttacks.Clear();
         }
 
         private void AddToMeter(float amount)

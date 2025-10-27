@@ -35,6 +35,12 @@ namespace VMCSE.Components
             handler = HeroController.instance.gameObject.GetComponent<DevilCrestHandler>();
             GetSprites();
             CreateSkillIcons();
+            CreateTrigger();
+        }
+
+        private void CreateTrigger()
+        {
+            handler.GetTrigger().CreateTriggerUI();
         }
 
         private void GetSprites()
