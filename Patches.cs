@@ -19,6 +19,7 @@ public static class Patches
     {
         try
         {
+            ResourceLoader.InitOnHeroLoad();
             AnimationManager.InitAnimations();
             CrestManager.AddCrest();
         }

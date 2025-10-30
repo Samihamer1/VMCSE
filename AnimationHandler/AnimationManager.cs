@@ -11,11 +11,15 @@ namespace VMCSE.AnimationHandler
     {
         public const float SPRITESCALE = 3.25f;
         private static GameObject? DevilSwordAnimator;
+        private static GameObject? KingCerberusAnimator;
+        
+        //I know hard-coding png dimensions is a bad idea. I MIGHT fix it.
+        //Just let me cook first, alright?
         public static void InitAnimations()
         {
             #region DevilSword animations
 
-            DevilSwordAnimator = CreateAnimationObject("DevilSword");
+            DevilSwordAnimator = CreateAnimationObject("DevilSword Animations");
 
             //DevilSword animations (for DevilSwordDante)
 
@@ -41,6 +45,9 @@ namespace VMCSE.AnimationHandler
 
             //Downspike
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.Downspike.spritesheet.png", "DownSpike", 16, tk2dSpriteAnimationClip.WrapMode.Once, 2, 270, 250);
+
+            //Downspike Red
+            LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.DownSpikeRed.spritesheet.png", "DownSpike Red", 16, tk2dSpriteAnimationClip.WrapMode.Once, 2, 270, 250);
 
             //Downspike Antic
             LoadAnimationTo(DevilSwordAnimator, "VMCSE.Resources.DevilSword.DownspikeAntic.spritesheet.png", "DownSpike Antic", 18, tk2dSpriteAnimationClip.WrapMode.Once, 3, 270, 250);
@@ -87,6 +94,56 @@ namespace VMCSE.AnimationHandler
             SetFrameToTriggerRedSlash(DevilSwordAnimator, "DashStabEffect", 3);
 
             #endregion
+
+            #region KingCerberus animations
+            KingCerberusAnimator = CreateAnimationObject("KingCerberus Animations");
+            //Slash
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.WITCH, "Slash", "Slash", 24);
+
+            //SlashAlt
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.WITCH, "SlashAlt", "SlashAlt", 24);
+
+            //DownSlash
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.WANDERER, "DownSlash", "DownSlash", 24);
+
+            //SlashEffect
+            LoadAnimationTo(KingCerberusAnimator, "VMCSE.Resources.KingCerberus.SlashEffect.spritesheet.png", "SlashEffect", 30, tk2dSpriteAnimationClip.WrapMode.Once, 3, 302, 244);
+            SetFrameToTrigger(KingCerberusAnimator, "SlashEffect", 1); // To activate the damage frames within NailSlash
+            SetFrameToTriggerRedSlash(KingCerberusAnimator, "SlashEffect", 2);
+
+            //SlashAltEffect
+            LoadAnimationTo(KingCerberusAnimator, "VMCSE.Resources.KingCerberus.SlashAltEffect.spritesheet.png", "SlashAltEffect", 30, tk2dSpriteAnimationClip.WrapMode.Once, 3, 289, 245);
+            SetFrameToTrigger(KingCerberusAnimator, "SlashAltEffect", 1); // To activate the damage frames within NailSlash
+            SetFrameToTriggerRedSlash(KingCerberusAnimator, "SlashAltEffect", 2);
+
+            //SlashUpEffect
+            LoadAnimationTo(KingCerberusAnimator, "VMCSE.Resources.KingCerberus.SlashUpEffect.spritesheet.png", "SlashUpEffect", 24, tk2dSpriteAnimationClip.WrapMode.Once, 3, 313, 246);
+            SetFrameToTrigger(KingCerberusAnimator, "SlashUpEffect", 1); // To activate the damage frames within NailSlash
+            SetFrameToTriggerRedSlash(KingCerberusAnimator, "SlashUpEffect", 2);
+
+            //SlashDownEffect
+            LoadAnimationTo(KingCerberusAnimator, "VMCSE.Resources.KingCerberus.SlashDownEffect.spritesheet.png", "SlashDownEffect", 24, tk2dSpriteAnimationClip.WrapMode.Once, 3, 249, 198);
+            SetFrameToTrigger(KingCerberusAnimator, "SlashDownEffect", 1); // To activate the damage frames within NailSlash
+            SetFrameToTriggerRedSlash(KingCerberusAnimator, "SlashDownEffect", 2);
+
+            //Dash Attack
+            LoadAnimationTo(KingCerberusAnimator, "VMCSE.Resources.KingCerberus.DashAttack.spritesheet.png", "Dash Attack", 24, tk2dSpriteAnimationClip.WrapMode.Once, 2, 294, 210);
+            SetFrameToTrigger(KingCerberusAnimator, "SlashDownEffect", 1); // To activate the damage frames within NailSlash
+            SetFrameToTriggerRedSlash(KingCerberusAnimator, "SlashDownEffect", 2);
+
+            //Dash Attack Antic
+            LoadAnimationTo(KingCerberusAnimator, "VMCSE.Resources.KingCerberus.DashAttackAntic.spritesheet.png", "Dash Attack Antic", 10, tk2dSpriteAnimationClip.WrapMode.Once, 2, 294, 210);
+
+            //Dash Attack Recover
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.DEFAULT, "Dash Attack Recover", "Dash Attack Recover", 18);
+
+            //Dash Stab Effect
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.CLOAKLESS, "DashStabEffect", "DashStabEffect", 24);
+            SetFrameToTriggerRedSlash(KingCerberusAnimator, "DashStabEffect", 3);
+
+            //Dash Stab Effect_Glow
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.CLOAKLESS, "DashStabEffect_Glow", "DashStabEffect_Glow", 24);
+            #endregion
         }
 
         internal static tk2dSpriteAnimation? GetDevilSwordAnimator()
@@ -97,6 +154,16 @@ namespace VMCSE.AnimationHandler
                 return null;
             }
             return DevilSwordAnimator.GetComponent<tk2dSpriteAnimator>().library;
+        }
+
+        internal static tk2dSpriteAnimation? GetKingCerberusAnimator()
+        {
+            if (KingCerberusAnimator == null)
+            {
+                VMCSE.Instance.LogError("Devilsword animator not found");
+                return null;
+            }
+            return KingCerberusAnimator.GetComponent<tk2dSpriteAnimator>().library;
         }
 
         private static void SetFrameToTrigger(GameObject animatorObject, string animationName, int frame) {
@@ -190,7 +257,7 @@ namespace VMCSE.AnimationHandler
             }
 
             tk2dSpriteCollectionData spriteCollectiondata = Tk2dHelper.CreateTk2dSpriteCollection(texture1, names, rects, anchors, new GameObject());
-            spriteCollectiondata.material = HeroController.instance.GetComponent<MeshRenderer>().material;
+            spriteCollectiondata.material.shader = HeroController.instance.GetComponent<MeshRenderer>().material.shader;
 
             tk2dSpriteAnimationFrame[] list1 = new tk2dSpriteAnimationFrame[length];
 

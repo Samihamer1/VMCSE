@@ -155,7 +155,7 @@ namespace VMCSE.Components
 
         public void LargeLoss()
         {
-            rank -= 2;
+            rank -= 1;
             rank = Math.Clamp(rank, 0, maxRank);
             metermax = meterlevels[rank];
             if (meter > metermax * 0.3f)
@@ -222,6 +222,12 @@ namespace VMCSE.Components
 
         private void UpdateUI()
         {
+            DevilCrestHandler handler = HeroController.instance.gameObject.GetComponent<DevilCrestHandler>();
+            if (handler == null) { return; }
+            if (StyleRoot == null) { return; }
+            if (!handler.IsDevilEquipped()) { StyleRoot.SetActive(false); return; }
+            StyleRoot.SetActive(true);
+
             for (int i = 0; i < StyleBackgrounds.Length; i++)
             {
                 StyleBackgrounds[i].gameObject.SetActive(false);

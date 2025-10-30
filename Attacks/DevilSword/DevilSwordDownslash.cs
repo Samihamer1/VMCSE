@@ -5,21 +5,40 @@ using System.Collections.Generic;
 using System.Text;
 using Silksong.FsmUtil;
 using UnityEngine;
+using VMCSE.Components;
+using VMCSE.AnimationHandler;
 
 namespace VMCSE.Attacks.DevilSword
 {
     public class DevilSwordDownslash : BaseAttack
     {
         private GameObject downslashObject;
-
+        private GameObject redslashObject;
 
         public DevilSwordDownslash(GameObject downslashObject)
         {
             this.downslashObject = downslashObject;
         }
 
+        private void CreateRedSlash()
+        {
+            GameObject redslash = GameObject.Instantiate(downslashObject);
+            redslash.transform.parent = downslashObject.transform;
+            redslash.transform.localPosition = new Vector3(-0.6f, 0, 0);
+
+            redslash.name = AttackNames.REDSLASH;
+            redslash.GetComponent<DamageEnemies>().silkGeneration = HitSilkGeneration.None;
+            redslash.GetComponent<DamageEnemies>().nailDamageMultiplier *= 0.3f;
+            redslash.GetComponent<NailSlash>().animName = "DownSpike Red";
+            redslash.GetComponent<NailSlash>().hc = HeroController.instance;
+
+            redslashObject = redslash;
+        }
+
         public override void CreateAttack()
         {
+            CreateRedSlash();
+
             fsm = HeroController.instance.gameObject.LocateMyFSM("Crest Attacks");
             if (fsm == null) { VMCSE.Instance.LogError("VMCSE - Sprint not found."); return; }
 
@@ -43,21 +62,28 @@ namespace VMCSE.Attacks.DevilSword
             //Antic State
 
             FsmState DevilDownslashAnticState = fsm.AddState("Devilsword Downslash Antic");
-            DevilDownslashAnticState.AddAnimationAction("DevilSword", "DownSpike Antic");
+            DevilDownslashAnticState.AddAnimationAction(AnimationManager.GetDevilSwordAnimator().GetClipByName("DownSpike Antic"));
             DevilDownslashAnticState.AddWatchAnimationAction("FINISHED");
 
             //Slash state
 
-            FsmState DevilDownslashState = fsm.AddState("Devilsword Downslash");
+            FsmState DevilDownslashState = fsm.AddState("Devilsword Downslash");       
+            DevilDownslashState.AddAnimationAction(AnimationManager.GetDevilSwordAnimator().GetClipByName("DownSpike"));
+            DevilDownslashState.AddWatchAnimationAction("ANIM END");
             DevilDownslashState.AddMethod(_ =>
             {
                 HeroController.instance.gameObject.GetComponent<Rigidbody2D>().SetVelocity(0, -35);
                 HeroController.instance.AffectedByGravity(true);
                 HeroController.instance.SetCState("downAttacking", true);
                 downslashObject.GetComponent<NailSlash>().StartSlash();
+
+                DevilCrestHandler handler = HeroController.instance.gameObject.GetComponent<DevilCrestHandler>();
+                if (handler == null) { return; }
+
+                if (!handler.ConsumeChaserBlade()) { return; }
+                redslashObject.GetComponent<NailSlash>().StartSlash();
+                redslashObject.GetComponent<tk2dSprite>().color = ColorConstants.DanteRed;
             });
-            DevilDownslashState.AddAnimationAction("DevilSword", "DownSpike");
-            DevilDownslashState.AddWatchAnimationAction("ANIM END");
 
             //Slash end state
 

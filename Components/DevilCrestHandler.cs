@@ -19,11 +19,11 @@ namespace VMCSE.Components
         private List<WeaponBase> allWeapons = new List<WeaponBase>();
 
         private List<WeaponBase> equippedWeapons = new List<WeaponBase>();        
-        private WeaponBase equippedWeapon;
-        private StyleMeter styleMeter;
-        private DevilTrigger devilTrigger;
+        private WeaponBase? equippedWeapon;
+        private StyleMeter? styleMeter;
+        private DevilTrigger? devilTrigger;
 
-        private GameObject chaserRoot;
+        private GameObject? chaserRoot;
         private GameObject[] chaserBlades = new GameObject[4];
         private int currentChaserIndex = 0;
 
@@ -170,15 +170,61 @@ namespace VMCSE.Components
 
         private void CreateWeapons()
         {
+            //Consider moving this functionality to a new Handler so that other mods may also create weapons?
             DevilSwordWeapon devilSword = new DevilSwordWeapon();
             allWeapons.Add(devilSword);
+
+            KingCerberusWeapon kingCerberus = new KingCerberusWeapon();
+            allWeapons.Add(kingCerberus);
 
             EquipWeapon(devilSword);
         }
 
+        private void CycleWeapon()
+        {
+            if (!IsDevilEquipped()) { return; }
+
+            //Can't be in anything except Idle state on sprint fsm
+            //THIS IS A HOTFIX FOR SWITCHING WEAPONS MID DASH ATTACK BREAKING IT
+            //FIX THAT LATER
+            //that means making new fsm state lines for dash attacks....
+            PlayMakerFSM sprintFSM = HeroController.instance.gameObject.LocateMyFSM("Sprint");
+            if (sprintFSM == null) { return; }
+            if (sprintFSM.ActiveStateName != "Idle" ) { return; }
+
+            //Must be holding no direction
+            if (InputHandler.Instance.inputActions.Up.IsPressed 
+                || InputHandler.Instance.inputActions.Down.IsPressed
+                || InputHandler.Instance.inputActions.Left.IsPressed
+                || InputHandler.Instance.inputActions.Right.IsPressed)
+            {
+                return;
+            }
+
+
+            //For now using allWeapons, switch to equippedWeapons after
+
+            int currentIndex = allWeapons.FindIndex(x => x == equippedWeapon);
+            if (currentIndex == -1)
+            {
+                //Equip first weapon and call it a night
+                EquipWeapon(allWeapons[0]);
+                return;
+            }
+
+            //If we're on the last weapon, reset the cycle
+            if (currentIndex + 1 == allWeapons.Count)
+            {
+                EquipWeapon(allWeapons[0]);
+                return;
+            }
+
+            EquipWeapon(allWeapons[currentIndex + 1]);
+        }
+
         private void EquipWeapon(WeaponBase weapon)
         {
-            HeroControllerConfig config = CrestManager.devilCrest.heroControllerConfig;
+            HeroControllerConfig config = weapon.config.GetConfig();
             HeroController.ConfigGroup group = weapon.GetConfigGroup();
             group.Config = config;
             group.Setup();
@@ -192,6 +238,8 @@ namespace VMCSE.Components
             }
 
             HeroController.instance.SetConfigGroup(group, group);
+
+            
 
             CrestManager.devilroot.SetActive(true);
 
@@ -218,22 +266,24 @@ namespace VMCSE.Components
         {
             if (HeroController.instance.playerData.CurrentCrestID != "Devil") { return; }
 
+            ClearQueue(); //Clear the input buffer
+
             if (InputHandler.Instance.inputActions.Up.IsPressed)
             {
                 equippedWeapon.UpSpell();
+                return;
             }
             if (InputHandler.Instance.inputActions.Down.IsPressed)
             {
                 equippedWeapon.DownSpell();
+                return;
             }
             if (InputHandler.Instance.inputActions.Left.IsPressed || InputHandler.Instance.inputActions.Right.IsPressed)
             {
 
                 equippedWeapon.HorizontalSpell();
+                return;
             }
-
-            //hit the bigmoney
-            ClearQueue();
         }
 
         public void Update()
@@ -241,11 +291,17 @@ namespace VMCSE.Components
             if (InputHandler.Instance.inputActions.QuickCast.WasPressed && HeroController.instance.CanCast())
             {
                 Cast();
-                
+
+                //Cycle Weapon
+                CycleWeapon();
+
             } else if (InputHandler.Instance.inputActions.QuickCast.WasPressed && !HeroController.instance.CanCast())
             {
                 castQueuing = true;
                 castQueueSteps = 0;
+
+                //Cycle Weapon
+                CycleWeapon();
             }
 
             if (InputHandler.Instance.inputActions.QuickCast.IsPressed && castQueuing && castQueueSteps <= CAST_QUEUESTEPS && HeroController.instance.CanCast())
@@ -301,6 +357,7 @@ namespace VMCSE.Components
         public void HitLanded(HitInstance instance)
         {
             if (!instance.IsHeroDamage) { return; }
+            if (!IsDevilEquipped()) { return; }
 
             styleMeter.HitLanded(instance);
             devilTrigger.HitLanded(instance);

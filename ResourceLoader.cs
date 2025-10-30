@@ -59,8 +59,15 @@ namespace VMCSE
 
         public static void Init()
         {
-            LoadBundle();
             LoadSprites();
+        }
+
+        /// <summary>
+        /// Resource initialisation on hero loading. Used because for some reason, unloading a save deletes the asset bundle regardless.
+        /// </summary>
+        public static void InitOnHeroLoad()
+        {
+            LoadBundle();
         }
 
         private static void LoadSpriteToAssets(string name, string path)

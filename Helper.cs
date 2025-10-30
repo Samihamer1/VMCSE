@@ -100,6 +100,7 @@ namespace VMCSE
 
         /// <summary>
         /// Adds a prebuilt DamageEnemies to a gameobject. use after collider is already added. Customise at will afterwards.
+        /// Autobuilds as a nail attack. Change if undesired.
         /// </summary>
         /// <param name="target">The gameobject to be added to</param>
         /// <returns>The created DamageEnemies component</returns>
@@ -126,6 +127,7 @@ namespace VMCSE
             dmg.isHeroDamage = true;
 
 
+            target.tag = "Nail Attack";
             target.layer = (int)PhysLayers.HERO_ATTACK;
 
             return dmg;
@@ -175,21 +177,17 @@ namespace VMCSE
         }
 
         /// <summary>
-        /// Adds a Tk2dPlayAnimation action to a state. Only use when hornet is created already.
+        /// Adds a method that plays an animation clip on hornet. Only use when hornet is created already.
         /// </summary>
         /// <param name="state">The state</param>
-        /// <param name="animLibName">The name of the animation library</param>
-        /// <param name="clipName">The name of the animation clip</param>
-        public static void AddAnimationAction(this FsmState state, string animLibName, string clipName)
+        /// <param name="clip">The clip to be played</param>
+        public static void AddAnimationAction(this FsmState state, tk2dSpriteAnimationClip clip)
         {
             FsmOwnerDefault hornetOwnerDefault = GetHornetOwnerDefault();
-            state.AddAction(new Tk2dPlayAnimation
+            
+            state.AddMethod(_ =>
             {
-                animLibName = animLibName,
-                heroAnim = HeroController.instance.animCtrl,
-                clipName = clipName,
-                fsmComponent = state.fsm.FsmComponent,
-                gameObject = hornetOwnerDefault
+                HeroController.instance.GetComponent<tk2dSpriteAnimator>().Play(clip);
             });
         }
 

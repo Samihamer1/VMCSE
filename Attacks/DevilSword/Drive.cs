@@ -18,10 +18,11 @@ namespace VMCSE.Attacks.DevilSword
         //good luck o7
         private GameObject driveObject;
         private GameObject driveAltObject;
+        private GameObject driveFinalObject;
         private tk2dSpriteAnimation shamanLibrary;
         private float chargeTimer = 0f;
 
-        private const float COOLDOWNTIME = 1f;
+        private const float COOLDOWNTIME = 2f;
         public Drive(DevilCrestHandler handler) : base(handler)
         {
             EVENTNAME = EventNames.DRIVE;
@@ -33,6 +34,7 @@ namespace VMCSE.Attacks.DevilSword
         {
             driveObject.GetComponent<tk2dSprite>().color = new Color(1, 0.2f, 0.2f, 0.9f);
             driveAltObject.GetComponent<tk2dSprite>().color = new Color(1, 0.2f, 0.2f, 0.9f);
+            driveFinalObject.GetComponent<tk2dSprite>().color = new Color(1, 0.2f, 0.2f, 0.9f);
         }
 
         private void ModifySlash(GameObject slash)
@@ -60,6 +62,11 @@ namespace VMCSE.Attacks.DevilSword
             driveAltObject = CrestManager.CloneSlashObject(shaman.Child("AltSlash"), specialattacks);
             ModifySlash(driveAltObject);
             driveAltObject.name = AttackNames.DRIVESLASH2;
+
+            driveFinalObject = CrestManager.CloneSlashObject(shaman.Child("Slash"), specialattacks);            
+            ModifySlash(driveFinalObject);
+            driveFinalObject.name = AttackNames.REDSLASH;
+            driveFinalObject.GetComponent<DamageEnemies>().nailDamageMultiplier = 0.25f;
         }
 
         private IEnumerator ChargeUp()
@@ -81,7 +88,16 @@ namespace VMCSE.Attacks.DevilSword
         {
             driveObject.GetComponent<NailSlash>().StartSlash();
             yield return new WaitForSeconds(0.1f);
+            if (fsm.ActiveStateName != "Drive End Delay") { yield break; }
             driveAltObject.GetComponent<NailSlash>().StartSlash();
+        }
+
+        private IEnumerator TripleDrive()
+        {
+            yield return DoubleDrive();
+            yield return new WaitForSeconds(0.1f);
+            if (fsm.ActiveStateName != "Drive End Delay") { yield break; }
+            driveFinalObject.GetComponent<NailSlash>().StartSlash();
         }
 
         public override void CreateAttack()
@@ -103,7 +119,7 @@ namespace VMCSE.Attacks.DevilSword
                 chargeTimer = 0f;
             });
             //DriveAnticState.AddAction(new DecelerateV2 { gameObject = hornetOwnerDefault, brakeOnExit = false, deceleration = 0.85f });
-            DriveAnticState.AddAnimationAction("DevilSword", "DriveSlash");
+            DriveAnticState.AddAnimationAction(AnimationManager.GetDevilSwordAnimator().GetClipByName("DriveSlash"));
             DriveAnticState.AddWatchAnimationActionTrigger("FINISHED");
             
 
@@ -114,25 +130,39 @@ namespace VMCSE.Attacks.DevilSword
             FsmState DriveReleaseState = fsm.AddState("Drive Release");
             DriveReleaseState.AddMethod(_ =>
             {
-                driveObject.GetComponent<NailSlash>().StartSlash();
                 StartCooldownTimer(COOLDOWNTIME);
+
+                if (handler.GetTrigger().IsInTrigger())
+                {
+                    GameManager.instance.StartCoroutine(DoubleDrive());
+                    return;
+                }
+
+                driveObject.GetComponent<NailSlash>().StartSlash();
+                
             });
-            DriveReleaseState.AddAnimationAction("DevilSword", "DriveSlashFast");
+            DriveReleaseState.AddAnimationAction(AnimationManager.GetDevilSwordAnimator().GetClipByName("DriveSlashFast"));
 
             FsmState DriveCheckHoldState = fsm.AddState("Drive Check Hold");
             DriveCheckHoldState.AddMethod(_ =>
             {
                 GameManager.instance.StartCoroutine(ChargeUp());
             });
-            DriveCheckHoldState.AddAnimationAction("DevilSword", "Drive Antic");
+            DriveCheckHoldState.AddAnimationAction(AnimationManager.GetDevilSwordAnimator().GetClipByName("Drive Antic"));
 
             FsmState DriveReleaseLargeState = fsm.AddState("Drive Release Large");
             DriveReleaseLargeState.AddMethod(_ =>
             {
-                GameManager.instance.StartCoroutine(DoubleDrive());
                 StartCooldownTimer(COOLDOWNTIME);
+                if (handler.GetTrigger().IsInTrigger())
+                {
+                    GameManager.instance.StartCoroutine(TripleDrive());
+                    return;
+                }
+                GameManager.instance.StartCoroutine(DoubleDrive());
+                
             });
-            DriveReleaseLargeState.AddAnimationAction("DevilSword", "DriveSlashFast");
+            DriveReleaseLargeState.AddAnimationAction(AnimationManager.GetDevilSwordAnimator().GetClipByName("DriveSlashFast"));
 
             FsmState DriveRecoilLargeState = fsm.AddState("Drive Recoil Large");
             DriveRecoilLargeState.AddMethod(_ =>
@@ -152,6 +182,15 @@ namespace VMCSE.Attacks.DevilSword
             //DriveRecoilState.AddAnimationAction("Hornet CrestWeapon Shaman Anim", "Slash_Charged");
             DriveEndDelayState.AddAction(new DecelerateV2 { gameObject = hornetOwnerDefault, deceleration = 0.4f, brakeOnExit = false });
             DriveEndDelayState.AddWatchAnimationAction("FINISHED");
+
+            //cancel cleanup
+            FsmState CancelAllState = fsm.GetState("Cancel All");
+            CancelAllState.AddMethod(_ =>
+            {
+                driveObject.GetComponent<NailSlash>().CancelAttack();
+                driveAltObject.GetComponent<NailSlash>().CancelAttack();
+                driveFinalObject.GetComponent<NailSlash>().CancelAttack();
+            });
 
             //transitions
             DriveAnticState.AddTransition("FINISHED", DriveCheckHoldState.name);

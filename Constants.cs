@@ -9,6 +9,9 @@ namespace VMCSE
     {
         public static readonly string SHAMAN = "Hornet CrestWeapon Shaman Anim";
         public static readonly string WANDERER = "Hornet CrestWeapon Dagger Anim";
+        public static readonly string WITCH = "Hornet CrestWeapon Whip Anim";
+        public static readonly string CLOAKLESS = "Hornet Cloakless Anim";
+        public static readonly string DEFAULT = "Knight";
     }
 
     internal static class StateNames
@@ -27,6 +30,7 @@ namespace VMCSE
     internal static class EventNames
     {
         public static readonly string DEVILSWORD = "DEVILSWORD";
+        public static readonly string KINGCERBERUS = "KINGCERBERUS";
         public static readonly string REACTOR = "REACTOR";
         public static readonly string DRIVE = "DRIVE";
         public static readonly string ROUNDTRIP = "ROUNDTRIP";
@@ -91,5 +95,6 @@ namespace VMCSE
     internal static class ColorConstants
     {
         public static readonly Color DanteRed = new Color(1, 0.25f, 0.25f, 0.5f);
+        public static readonly Color CerberusBlue = new Color(0.75f, 0.85f, 1, 1);
     }
 }

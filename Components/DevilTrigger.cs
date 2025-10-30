@@ -15,10 +15,12 @@ namespace VMCSE.Components
         private GameObject[] TriggerBarObjects = new GameObject[10];
         private float TRIGGERBARMAX = 20; //only for a single bar. all 10 add up to 200
         private float TRIGGERMAX = 200;
-        private float TRIGGERGAIN = 50; //return to 6.25 after testing
+        private float TRIGGERGAIN = 6.25f; //return to 6.25 after testing
         private float trigger = 0f;
 
         private bool InTrigger = false;
+
+        private DevilCrestHandler handler;
 
         private const float TRIGGERLOSSPERSECOND = 10;
 
@@ -208,6 +210,7 @@ namespace VMCSE.Components
         public void InitialiseTriggerEffects()
         {
             CreateTriggerEffect();
+            handler = HeroController.instance.gameObject.GetComponent<DevilCrestHandler>();
         }
 
         public bool IsInTrigger()
@@ -217,6 +220,10 @@ namespace VMCSE.Components
 
         private void Update()
         {
+            if (handler == null) { return; }
+            if (TriggerRoot == null) { return; }
+            if (!handler.IsDevilEquipped() && TriggerRoot.activeSelf) { TriggerRoot.SetActive(false); } //i just dont wanna spam setactive
+            if (handler.IsDevilEquipped() && !TriggerRoot.activeSelf) { TriggerRoot.SetActive(true); }
             if (!InTrigger) { return; }
 
             //Trigger loss

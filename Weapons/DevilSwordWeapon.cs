@@ -11,7 +11,6 @@ namespace VMCSE.Weapons
 {
     internal class DevilSwordWeapon : WeaponBase
     {
-        GameObject redslash;
         public DevilSwordWeapon() {
             try
             {
@@ -45,24 +44,16 @@ namespace VMCSE.Weapons
             }
 
             configGroup = objectInfo.getConfigGroup();
-            
-            
-        }
 
-        private void RedSlash(tk2dSpriteAnimator animator, tk2dSpriteAnimationClip clip, int frame)
-        {
-            if (clip.GetFrame(frame).eventInfo != "RedSlash") { return; }
+            //Config
+            HeroControllerConfig configRef = config.GetConfig();
+            configRef.heroAnimOverrideLib = AnimationManager.GetDevilSwordAnimator();
+            configRef.attackCooldownTime = 0.45f;
+            configRef.attackDuration = 0.35f;
+            configRef.attackRecoveryTime = 0.25f;
+            configRef.downSlashType = HeroControllerConfig.DownSlashTypes.Custom;
+            configRef.downSlashEvent = "DEVILSWORD DOWNSLASH";
 
-            GameObject RedSlash = animator.gameObject.Child(AttackNames.REDSLASH);
-
-            if (RedSlash == null) { return; }
-
-            if (!handler.ConsumeChaserBlade()) { return; }
-
-            tk2dSpriteAnimator redAnim = RedSlash.GetComponent<tk2dSpriteAnimator>();
-            redAnim.Sprite.color = new Color(1, 0.25f, 0.25f, 0.5f);
-            
-            RedSlash.GetComponent<NailSlash>().StartSlash();
         }
 
         private void CreateWeaponObjects()
@@ -78,7 +69,7 @@ namespace VMCSE.Weapons
             GameObject beast = attacks.Child("Warrior");
             GameObject wanderer = attacks.Child("Wanderer");
 
-            objectInfo.slashWallObject = CrestManager.CloneSlashObject(reaper.Child("WallSlash"), devilroot);
+            
 
             //special case for our dash stab
             GameObject devildashstab = UnityEngine.Object.Instantiate(hunter.Child("Dash Stab"));
@@ -98,26 +89,6 @@ namespace VMCSE.Weapons
             //damager.doesNotTink = true;
 
             objectInfo.slashdashstabObject = devildashstab;
-
-
-            //repackage sprites to fix artefact
-            //Regular slash
-            //GameObject devilslash = CrestManager.CloneSlashObject(hunter.Child("Slash"), devilroot);
-            //StandardSlash devilSlash1 = new StandardSlash
-            //{
-            //    SlashObject = devilslash,
-            //    SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
-            //    SlashPrefabName = "DevilSwordSlash",
-            //    AnimationName = "SlashEffect",
-            //    LocalPosition = new Vector3(-1.1f, 0.4f, -0.001f),
-            //    LocalScale = new Vector3(1.1f, 1f, 1),
-            //    CreateRedSlash = true,
-            //    RedSlashOffset = new Vector3(-0.3f, 0, 0)
-            //};
-            //devilSlash1.SetupSlash();
-            
-            
-            //devilslash.GetComponent<tk2dSpriteAnimator>().AnimationEventTriggeredEvent += RedSlash;
 
             //Regular slash
             GameObject devilslash = new GameObject("DevilSword Slash");
@@ -145,22 +116,6 @@ namespace VMCSE.Weapons
 
             objectInfo.slashAltObject = devilslashalt;
 
-            //GameObject devilslashalt = CrestManager.CloneSlashObject(hunter.Child("Slash"), devilroot);
-            //StandardSlash devilSlash2 = new StandardSlash
-            //{
-            //    SlashObject = devilslashalt,
-            //    SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
-            //    SlashPrefabName = "DevilSwordSlashAlt",
-            //    AnimationName = "SlashAltEffect",
-            //    LocalPosition = new Vector3(-0.6f, 0.4f, -0.001f),
-            //    LocalScale = new Vector3(1.1f, 0.85f, 1),
-            //    CreateRedSlash = true,
-            //    RedSlashOffset = new Vector3(-0.3f, 0, 0)
-            //};
-            //devilSlash2.SetupSlash();
-
-            //devilslashalt.GetComponent<tk2dSpriteAnimator>().AnimationEventTriggeredEvent += RedSlash;
-
             //Slashup
             GameObject devilupslash = new GameObject("DevilSword UpSlash");
             devilupslash.transform.parent = devilroot.transform;
@@ -175,23 +130,6 @@ namespace VMCSE.Weapons
 
             objectInfo.slashUpObject = devilupslash;
 
-            //GameObject devilupslash = CrestManager.CloneSlashObject(hunter.Child("UpSlash"), devilroot);
-            //StandardSlash devilSlash3 = new StandardSlash
-            //{
-            //    SlashObject = devilupslash,
-            //    SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
-            //    SlashPrefabName = "DevilSwordSlashUp",
-            //    AnimationName = "SlashUpEffect",
-            //    LocalPosition = new Vector3(-1f, 1.1f, -0.001f),
-            //    LocalScale = new Vector3(1.1f, 1f, 1),
-            //    CreateRedSlash = true,
-            //    RedSlashOffset = new Vector3(-0.15f, 0.15f, 0)
-            //};
-            //devilSlash3.SetupSlash();
-
-
-            //devilupslash.GetComponent<tk2dSpriteAnimator>().AnimationEventTriggeredEvent += RedSlash;
-
             //Downspike
             GameObject devildownslash = new GameObject("DevilSword DownSlash");
             devildownslash.transform.parent = devilroot.transform;
@@ -205,17 +143,19 @@ namespace VMCSE.Weapons
             slash4.SetDownAttack();
 
             objectInfo.slashDownObject = devildownslash;
-            //GameObject devildownslash = CrestManager.CloneSlashObject(wanderer.Child("DownSlash"), devilroot);
-            //StandardSlash devildownspike = new StandardSlash
-            //{
-            //    SlashObject = devildownslash,
-            //    SlashAnimator = AnimationManager.GetDevilSwordAnimator(),
-            //    SlashPrefabName = "DevilSwordDownspike",
-            //    AnimationName = "DownSpikeEffect",
-            //    LocalPosition = new Vector3(),
-            //    LocalScale = new Vector3(1.1f, 1f, 1)
-            //};
-            //devildownspike.SetupSlash();
+
+            //Wall slash
+            GameObject devilwallslash = new GameObject("DevilSword WallSlash");
+            devilwallslash.transform.parent = devilroot.transform;
+            devilwallslash.transform.localPosition = new Vector3(1.1f, 0.4f, -0.001f);
+            StandardSlash slash5 = devilwallslash.AddComponent<StandardSlash>();
+            slash5.SetScale(new Vector3(-1.1f, 1, 1));
+            slash5.SetAnimation(AnimationManager.GetDevilSwordAnimator(), "SlashEffect");
+            slash5.SetNailDamageMultiplier(1f);
+            slash5.SetColliderSize("DevilSwordSlash");
+            slash5.CreateRedSlash(new Vector3(-0.3f, 0, 0));
+
+            objectInfo.slashWallObject = devilwallslash;
 
         }
     }

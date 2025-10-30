@@ -25,10 +25,22 @@ namespace VMCSE.Weapons
         internal HeroController.ConfigGroup configGroup;
         public DevilCrestHandler handler;
 
+        internal WeaponConfig config;
+
         public WeaponBase()
         {
             if (HeroController.instance == null) { return; }
             handler = HeroController.instance.GetComponent<DevilCrestHandler>();
+
+
+            ToolCrestList currentList = ToolItemManager.Instance.crestList;
+            ToolCrest reaper = currentList.GetByName("Reaper");
+            HeroControllerConfig reaperConfig = reaper.HeroConfig;
+
+
+            //double test
+
+            config = new WeaponConfig(UnityEngine.GameObject.Instantiate(reaperConfig));
         }
 
         public bool isEquipped()

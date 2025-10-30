@@ -38,7 +38,7 @@ namespace VMCSE.Attacks.DevilSword
                 HeroController.instance.GetComponent<SpriteFlash>().flashFocusHeal();
             });
 
-            ThrowAnticState.AddAnimationAction("DevilSword", "RoundTrip Antic");
+            ThrowAnticState.AddAnimationAction(AnimationManager.GetDevilSwordAnimator().GetClipByName("RoundTrip Antic"));
             ThrowAnticState.AddWatchAnimationActionTrigger("FINISHED");
 
             FsmState ThrowSwordState = fsm.AddState("Throw Round Trip");
@@ -113,6 +113,7 @@ namespace VMCSE.Attacks.DevilSword
             dmg.dealtDamageFSMEvent = "";
             dmg.stunDamage = 0.1f;
             dmg.isHeroDamage = true;
+            dmg.silkGeneration = HitSilkGeneration.None;
 
             Rigidbody2D rigidbody = sword.AddComponent<Rigidbody2D>();
             rigidbody.bodyType = RigidbodyType2D.Kinematic;
