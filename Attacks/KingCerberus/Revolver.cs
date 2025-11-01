@@ -31,6 +31,7 @@ namespace VMCSE.Attacks.KingCerberus
             animator.library = AnimationManager.GetKingCerberusAnimator();
 
             PolygonCollider2D collider = revolverObject.AddComponent<PolygonCollider2D>();
+            collider.isTrigger = true;
             Helper.CopyPolygonColliderFromPrefab(revolverObject, "CerberusRevolver");
 
             DamageEnemies dmg = revolverObject.AddDamageEnemies();
@@ -38,7 +39,7 @@ namespace VMCSE.Attacks.KingCerberus
             dmg.nailDamageMultiplier = 0.4f;
             dmg.stunDamage = 0.3f;
             dmg.silkGeneration = HitSilkGeneration.FirstHit;
-            dmg.stepsPerHit = 13;
+            dmg.stepsPerHit = 10;
             dmg.magnitudeMult = 0;
 
             animator.Play("RevolverEffect");
