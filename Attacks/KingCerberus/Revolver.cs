@@ -1,4 +1,5 @@
-﻿using HutongGames.PlayMaker;
+﻿using GlobalEnums;
+using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using Silksong.FsmUtil;
 using System;
@@ -30,6 +31,7 @@ namespace VMCSE.Attacks.KingCerberus
             animator.library = AnimationManager.GetKingCerberusAnimator();
 
             PolygonCollider2D collider = revolverObject.AddComponent<PolygonCollider2D>();
+            Helper.CopyPolygonColliderFromPrefab(revolverObject, "CerberusRevolver");
 
             DamageEnemies dmg = revolverObject.AddDamageEnemies();
             dmg.multiHitter = true;

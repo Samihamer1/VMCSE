@@ -78,7 +78,7 @@ namespace VMCSE.Weapons
             slash1.SetScale(new Vector3(-1.1f, 1, 1));
             slash1.SetAnimation(AnimationManager.GetKingCerberusAnimator(), "SlashEffect");
             slash1.SetNailDamageMultiplier(1f);
-            slash1.SetColliderSize("DevilSwordSlash");
+            slash1.SetColliderSize("CerberusSlash");
             slash1.SetAudioClip(slashAudio);
             slash1.CreateRedSlash(new Vector3(0.3f, 0, 0));
             slash1.SetColor(ColorConstants.CerberusBlue);
@@ -93,7 +93,7 @@ namespace VMCSE.Weapons
             slash2.SetScale(new Vector3(-1.1f, 1f, 1));
             slash2.SetAnimation(AnimationManager.GetKingCerberusAnimator(), "SlashAltEffect");
             slash2.SetNailDamageMultiplier(1f);
-            slash2.SetColliderSize("DevilSwordSlashAlt");
+            slash2.SetColliderSize("CerberusSlashAlt");
             slash2.SetAudioClip(slashAudio);
             slash2.CreateRedSlash(new Vector3(0.3f, 0, 0));
             slash2.SetColor(ColorConstants.CerberusBlue);
@@ -109,7 +109,7 @@ namespace VMCSE.Weapons
             slash3.SetAnimation(AnimationManager.GetKingCerberusAnimator(), "SlashUpEffect");
             slash3.SetNailDamageMultiplier(1f);
             slash3.SetDamageDirection(90f);
-            slash3.SetColliderSize("DevilSwordSlashAlt");
+            slash3.SetColliderSize("CerberusSlashUp");
             slash3.SetAudioClip(slashAudio);
             slash3.CreateRedSlash(new Vector3(0f, 0.3f, 0));
             slash3.SetColor(ColorConstants.CerberusBlue);
@@ -126,7 +126,7 @@ namespace VMCSE.Weapons
             slash4.SetNailDamageMultiplier(1f);
             slash4.SetDamageDirection(270f);
             slash4.SetDownAttack();
-            slash4.SetColliderSize("DevilSwordSlashAlt");
+            slash4.SetColliderSize("CerberusSlashDown");
             slash4.SetAudioClip(slashAudio);
             slash4.CreateRedSlash(new Vector3(0f, -0.3f, 0));
             slash4.SetColor(ColorConstants.CerberusBlue);
