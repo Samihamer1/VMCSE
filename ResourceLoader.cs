@@ -12,7 +12,7 @@ namespace VMCSE
     internal static class ResourceLoader
     {
 
-        public static AssetBundle bundle;
+        public static AssetBundle? bundle;
 
         #region png paths
 
@@ -176,13 +176,18 @@ namespace VMCSE
             stream.CopyTo(ms);
             byte[] bundleData = ms.ToArray();
 
+            if (bundle != null)
+            {
+                bundle.Unload(false);
+            }
+
             // Load AssetBundle from memory
-             bundle = AssetBundle.LoadFromMemory(bundleData);
+            bundle = AssetBundle.LoadFromMemory(bundleData);
             if (bundle == null)
             {
                 VMCSE.Instance.LogError("Failed to load bundle");
                 return;
-            }
+            }           
         }
         public static Texture2D LoadTexture2D(string path)
         {

@@ -25,7 +25,7 @@ namespace VMCSE.Weapons
 
             name = WeaponNames.KINGCERBERUS;
             weaponEvent = EventNames.KINGCERBERUS;
-            //dashSlash = new MillionStab();
+            dashSlash = new KingSlayer();
             //cycloneSlash = new HighTime();
             //greatSlash = new SwordFormation();
             //specialDownSlash = new DevilSwordDownslash(objectInfo.slashDownObject);

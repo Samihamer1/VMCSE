@@ -6,6 +6,7 @@ using TeamCherry.Localization;
 using UnityEngine;
 using VMCSE.AnimationHandler;
 using VMCSE.Components;
+using VMCSE.EffectHandler;
 
 namespace VMCSE;
 
@@ -20,6 +21,7 @@ public static class Patches
         try
         {
             ResourceLoader.InitOnHeroLoad();
+            EffectManager.Initialise();
             AnimationManager.InitAnimations();
             CrestManager.AddCrest();
         }

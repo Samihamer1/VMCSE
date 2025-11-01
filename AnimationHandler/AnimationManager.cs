@@ -143,6 +143,9 @@ namespace VMCSE.AnimationHandler
 
             //Dash Stab Effect_Glow
             CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.CLOAKLESS, "DashStabEffect_Glow", "DashStabEffect_Glow", 24);
+
+            //King Slayer Antic
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.WITCH, "Slash_Charged", "King Slayer Antic", 24);
             #endregion
         }
 
