@@ -89,6 +89,9 @@ namespace VMCSE.Attacks.KingCerberus
 
             GameObject.Destroy(explosion.GetComponent<AutoRecycleSelf>());
 
+            //Name
+            subexplosion.name = AttackNames.KINGSLAYER;
+
             //damager
             GameObject damager = subexplosion.Child("damager");
             DamageEnemies dmg = damager.GetComponent<DamageEnemies>();

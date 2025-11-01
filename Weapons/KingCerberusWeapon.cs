@@ -26,14 +26,14 @@ namespace VMCSE.Weapons
             name = WeaponNames.KINGCERBERUS;
             weaponEvent = EventNames.KINGCERBERUS;
             dashSlash = new KingSlayer();
-            //cycloneSlash = new HighTime();
+            cycloneSlash = new Revolver();
             //greatSlash = new SwordFormation();
             //specialDownSlash = new DevilSwordDownslash(objectInfo.slashDownObject);
             specialDashStab = new CerberusDashStab(handler, objectInfo.slashdashstabObject);
 
             //downSpell = new Reactor(handler);
             //horizontalSpell = new Drive(handler);
-            //upSpell = new RoundTrip(handler);
+            //upSpell = new Revolver(handler);
 
             try
             {

@@ -34,6 +34,7 @@ namespace VMCSE
         public static readonly string REACTOR = "REACTOR";
         public static readonly string DRIVE = "DRIVE";
         public static readonly string ROUNDTRIP = "ROUNDTRIP";
+        public static readonly string REVOLVER = "REVOLVER";
     }
 
     internal static class AttackNames
@@ -48,6 +49,8 @@ namespace VMCSE
         public static readonly string ROUNDTRIP = "ROUND TRIP";
         public static readonly string ROUNDTRIPRED = "ROUND TRIP RED";
         public static readonly string ROUNDTRIPMINI = "ROUND TRIP MINI";
+        public static readonly string KINGSLAYER = "KING SLAYER";
+        public static readonly string REVOLVER = "REVOLVER";
     }
 
     #region Style system constants
@@ -86,7 +89,8 @@ namespace VMCSE
             [AttackNames.ROUNDTRIP] = new StyleGain(3, 10),
             [AttackNames.ROUNDTRIPRED] = new StyleGain(2.5f, 10),
             [AttackNames.REDSLASH] = new StyleGainNoLimit(4f),
-            [AttackNames.ROUNDTRIPMINI] = new StyleGainNoLimit(2f)
+            [AttackNames.ROUNDTRIPMINI] = new StyleGainNoLimit(2f),
+            [AttackNames.KINGSLAYER] = new StyleGain(4, 10),
         };
     }
 

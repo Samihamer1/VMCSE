@@ -15,6 +15,7 @@ namespace VMCSE.EffectHandler
         #region AudioEffect names
         internal static class Names
         {
+            public static readonly string WITCHSLASH = "Witch Slash";
             public static readonly string SILKSPEARZAP = "Silkspear Zap";
         }
         #endregion
@@ -23,6 +24,7 @@ namespace VMCSE.EffectHandler
         private Dictionary<string,Type> audioEffectDictionary = new Dictionary<string,Type>()
         {
             [Names.SILKSPEARZAP] = typeof(SilkspearZapAudioEffect),
+            [Names.WITCHSLASH] = typeof(WitchSlashAudioEffect),
 
         };
         #endregion

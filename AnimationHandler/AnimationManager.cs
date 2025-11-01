@@ -146,6 +146,12 @@ namespace VMCSE.AnimationHandler
 
             //King Slayer Antic
             CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.WITCH, "Slash_Charged", "King Slayer Antic", 24);
+
+            //RevolverEffect
+            LoadAnimationTo(KingCerberusAnimator, "VMCSE.Resources.KingCerberus.RevolverEffect.spritesheet.png", "RevolverEffect", 24, tk2dSpriteAnimationClip.WrapMode.Loop, 4, 445, 430);
+
+            //Revolver
+            CloneAnimationTo(KingCerberusAnimator, AnimationLibraryNames.DEFAULT, "DownSpikeBounce 1", "Revolver", 65);
             #endregion
         }
 
